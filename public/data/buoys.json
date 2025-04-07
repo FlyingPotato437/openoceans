@@ -1,0 +1,88 @@
+{
+  "buoys": [
+    {
+      "id": "B001",
+      "name": "Pacific Northwest Buoy",
+      "location": {
+        "lat": 45.5155,
+        "lng": -122.6789
+      },
+      "data": {
+        "temperature": 18.5,
+        "salinity": 35.1,
+        "ph": 8.1,
+        "dissolved_oxygen": 7.2
+      }
+    },
+    {
+      "id": "B002",
+      "name": "Great Barrier Reef Buoy",
+      "location": {
+        "lat": -16.9203,
+        "lng": 145.7710
+      },
+      "data": {
+        "temperature": 25.3,
+        "salinity": 35.6,
+        "ph": 8.2,
+        "dissolved_oxygen": 6.8
+      }
+    },
+    {
+      "id": "B003",
+      "name": "Mediterranean Buoy",
+      "location": {
+        "lat": 37.5024,
+        "lng": 15.0931
+      },
+      "data": {
+        "temperature": 22.1,
+        "salinity": 38.2,
+        "ph": 8.0,
+        "dissolved_oxygen": 6.5
+      }
+    },
+    {
+      "id": "B004",
+      "name": "California Current Buoy",
+      "location": {
+        "lat": 34.0522,
+        "lng": -118.2437
+      },
+      "data": {
+        "temperature": 19.8,
+        "salinity": 33.5,
+        "ph": 7.9,
+        "dissolved_oxygen": 6.9
+      }
+    },
+    {
+      "id": "B005",
+      "name": "Gulf Stream Buoy",
+      "location": {
+        "lat": 29.9511,
+        "lng": -81.2581
+      },
+      "data": {
+        "temperature": 24.7,
+        "salinity": 36.0,
+        "ph": 8.1,
+        "dissolved_oxygen": 6.7
+      }
+    },
+    {
+      "id": "B006",
+      "name": "North Sea Buoy",
+      "location": {
+        "lat": 55.9533,
+        "lng": -3.1883
+      },
+      "data": {
+        "temperature": 12.3,
+        "salinity": 34.8,
+        "ph": 8.0,
+        "dissolved_oxygen": 7.5
+      }
+    }
+  ]
+} 

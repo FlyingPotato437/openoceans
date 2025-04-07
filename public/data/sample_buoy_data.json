@@ -1,0 +1,188 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "generated": "2023-11-15T08:30:00Z",
+    "source": "REEFlect Ocean Monitoring Network",
+    "license": "CC BY 4.0",
+    "description": "Sample buoy data from the OpenOcean platform",
+    "contactEmail": "data@reeflect.org",
+    "citation": "REEFlect Ocean Monitoring Network (2023)",
+    "parameters": {
+      "temperature": {
+        "unit": "°C",
+        "description": "Water temperature at 1m depth",
+        "accuracy": "±0.1°C"
+      },
+      "salinity": {
+        "unit": "PSU",
+        "description": "Practical Salinity Unit measurement",
+        "accuracy": "±0.01 PSU"
+      },
+      "ph": {
+        "unit": "pH",
+        "description": "pH level of seawater",
+        "accuracy": "±0.01 pH"
+      },
+      "dissolved_oxygen": {
+        "unit": "mg/L",
+        "description": "Dissolved oxygen concentration",
+        "accuracy": "±0.1 mg/L"
+      }
+    }
+  },
+  "buoys": [
+    {
+      "id": "B001",
+      "name": "Pacific Northwest Buoy",
+      "location": {
+        "lat": 45.5155,
+        "lng": -122.6789,
+        "description": "Columbia River Estuary"
+      },
+      "deployment": {
+        "date": "2022-04-12",
+        "depth": "25m",
+        "platform": "REEFlect-3000"
+      },
+      "readings": [
+        {
+          "timestamp": "2023-11-15T00:00:00Z",
+          "temperature": 18.5,
+          "salinity": 35.1,
+          "ph": 8.1,
+          "dissolved_oxygen": 7.2
+        },
+        {
+          "timestamp": "2023-11-15T01:00:00Z",
+          "temperature": 18.4,
+          "salinity": 35.0,
+          "ph": 8.1,
+          "dissolved_oxygen": 7.1
+        },
+        {
+          "timestamp": "2023-11-15T02:00:00Z",
+          "temperature": 18.3,
+          "salinity": 35.1,
+          "ph": 8.0,
+          "dissolved_oxygen": 7.0
+        },
+        {
+          "timestamp": "2023-11-15T03:00:00Z",
+          "temperature": 18.2,
+          "salinity": 35.2,
+          "ph": 8.0,
+          "dissolved_oxygen": 6.9
+        },
+        {
+          "timestamp": "2023-11-15T04:00:00Z",
+          "temperature": 18.1,
+          "salinity": 35.1,
+          "ph": 8.0,
+          "dissolved_oxygen": 6.9
+        }
+      ]
+    },
+    {
+      "id": "B002",
+      "name": "Great Barrier Reef Buoy",
+      "location": {
+        "lat": -16.9203,
+        "lng": 145.7710,
+        "description": "Outer Reef"
+      },
+      "deployment": {
+        "date": "2022-02-18",
+        "depth": "15m",
+        "platform": "REEFlect-3000"
+      },
+      "readings": [
+        {
+          "timestamp": "2023-11-15T00:00:00Z",
+          "temperature": 25.3,
+          "salinity": 35.6,
+          "ph": 8.2,
+          "dissolved_oxygen": 6.8
+        },
+        {
+          "timestamp": "2023-11-15T01:00:00Z",
+          "temperature": 25.4,
+          "salinity": 35.6,
+          "ph": 8.2,
+          "dissolved_oxygen": 6.8
+        },
+        {
+          "timestamp": "2023-11-15T02:00:00Z",
+          "temperature": 25.5,
+          "salinity": 35.5,
+          "ph": 8.2,
+          "dissolved_oxygen": 6.7
+        },
+        {
+          "timestamp": "2023-11-15T03:00:00Z",
+          "temperature": 25.6,
+          "salinity": 35.5,
+          "ph": 8.1,
+          "dissolved_oxygen": 6.7
+        },
+        {
+          "timestamp": "2023-11-15T04:00:00Z",
+          "temperature": 25.7,
+          "salinity": 35.4,
+          "ph": 8.1,
+          "dissolved_oxygen": 6.6
+        }
+      ]
+    },
+    {
+      "id": "B003",
+      "name": "Mediterranean Buoy",
+      "location": {
+        "lat": 37.5024,
+        "lng": 15.0931,
+        "description": "Strait of Messina"
+      },
+      "deployment": {
+        "date": "2022-06-30",
+        "depth": "30m",
+        "platform": "REEFlect-2500"
+      },
+      "readings": [
+        {
+          "timestamp": "2023-11-15T00:00:00Z",
+          "temperature": 22.1,
+          "salinity": 38.2,
+          "ph": 8.0,
+          "dissolved_oxygen": 6.5
+        },
+        {
+          "timestamp": "2023-11-15T01:00:00Z",
+          "temperature": 22.0,
+          "salinity": 38.2,
+          "ph": 8.0,
+          "dissolved_oxygen": 6.5
+        },
+        {
+          "timestamp": "2023-11-15T02:00:00Z",
+          "temperature": 21.9,
+          "salinity": 38.3,
+          "ph": 8.0,
+          "dissolved_oxygen": 6.4
+        },
+        {
+          "timestamp": "2023-11-15T03:00:00Z",
+          "temperature": 21.8,
+          "salinity": 38.3,
+          "ph": 7.9,
+          "dissolved_oxygen": 6.4
+        },
+        {
+          "timestamp": "2023-11-15T04:00:00Z",
+          "temperature": 21.7,
+          "salinity": 38.4,
+          "ph": 7.9,
+          "dissolved_oxygen": 6.3
+        }
+      ]
+    }
+  ]
+} 

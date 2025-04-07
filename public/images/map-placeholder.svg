@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800px" height="600px" viewBox="0 0 800 600" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Map Placeholder</title>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="mapGradient">
+            <stop stop-color="#0B6E99" stop-opacity="0.1" offset="0%"></stop>
+            <stop stop-color="#0B6E99" stop-opacity="0.3" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect fill="#EAF6FB" x="0" y="0" width="800" height="600"></rect>
+        
+        <!-- Grid lines -->
+        <g stroke="#0B6E99" stroke-opacity="0.2" stroke-width="1">
+            <path d="M0,150 L800,150"></path>
+            <path d="M0,300 L800,300"></path>
+            <path d="M0,450 L800,450"></path>
+            <path d="M200,0 L200,600"></path>
+            <path d="M400,0 L400,600"></path>
+            <path d="M600,0 L600,600"></path>
+        </g>
+        
+        <!-- Longitude/Latitude labels -->
+        <g fill="#0B6E99" fill-opacity="0.4" font-family="Arial" font-size="10">
+            <text x="20" y="20">60°N</text>
+            <text x="20" y="150">30°N</text>
+            <text x="20" y="300">0°</text>
+            <text x="20" y="450">30°S</text>
+            <text x="20" y="580">60°S</text>
+            
+            <text x="200" y="580">60°W</text>
+            <text x="400" y="580">0°</text>
+            <text x="600" y="580">60°E</text>
+        </g>
+        
+        <!-- Continents (very simplified shapes) -->
+        <g fill="#CCCCCC">
+            <!-- North America -->
+            <path d="M50,50 C150,80 200,100 180,200 C170,250 100,250 80,300 L50,300 L20,200 Z"></path>
+            
+            <!-- South America -->
+            <path d="M150,300 C170,320 180,350 160,450 C140,500 100,520 80,500 L50,400 L80,350 Z"></path>
+            
+            <!-- Europe & Africa -->
+            <path d="M400,50 C450,80 470,150 450,200 C420,250 400,300 420,400 C430,450 400,500 350,520 L320,450 L350,350 L370,250 L380,150 Z"></path>
+            
+            <!-- Asia & Australia -->
+            <path d="M500,80 C600,100 650,150 700,200 C720,300 700,350 680,370 L620,400 L600,350 L550,330 L520,200 Z"></path>
+            <path d="M650,400 C680,420 690,450 670,500 C650,520 600,530 570,500 L560,450 L580,420 Z"></path>
+        </g>
+        
+        <!-- Ocean texture -->
+        <rect fill="url(#mapGradient)" x="0" y="0" width="800" height="600" opacity="0.3"></rect>
+        
+        <!-- Border -->
+        <rect stroke="#0B6E99" stroke-opacity="0.3" stroke-width="2" x="1" y="1" width="798" height="598" rx="4"></rect>
+    </g>
+</svg>
