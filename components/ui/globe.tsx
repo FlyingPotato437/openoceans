@@ -21,18 +21,18 @@ const GLOBE_CONFIG: COBEOptions = {
   glowColor: [1, 1, 1],
   markers: [
     // Ocean monitoring stations/buoys
-    { location: [45.5155, -122.6789], size: 0.05 }, // Pacific Northwest
-    { location: [-16.9203, 145.7710], size: 0.05 }, // Great Barrier Reef
+    { location: [45.5155, -122.6789], size: 0.07 }, // Pacific Northwest
+    { location: [-16.9203, 145.7710], size: 0.06 }, // Great Barrier Reef
     { location: [37.5024, 15.0931], size: 0.05 }, // Mediterranean Sea
-    { location: [18.2208, -66.5901], size: 0.05 }, // Caribbean
+    { location: [18.2208, -66.5901], size: 0.08 }, // Caribbean
     { location: [10.7500, 115.8000], size: 0.05 }, // South China Sea
-    { location: [27.9654, 34.5733], size: 0.05 }, // Red Sea
-    { location: [35.6762, 139.6503], size: 0.05 }, // Tokyo Bay
+    { location: [27.9654, 34.5733], size: 0.06 }, // Red Sea
+    { location: [35.6762, 139.6503], size: 0.07 }, // Tokyo Bay
     { location: [-33.8688, 151.2093], size: 0.05 }, // Sydney Harbour
-    { location: [51.5074, -0.1278], size: 0.05 }, // North Sea
-    { location: [-4.0383, 39.6682], size: 0.05 }, // Indian Ocean
+    { location: [51.5074, -0.1278], size: 0.06 }, // North Sea
+    { location: [-4.0383, 39.6682], size: 0.07 }, // Indian Ocean
     { location: [40.7128, -74.0060], size: 0.05 }, // New York Harbor
-    { location: [25.7617, -80.1918], size: 0.05 }, // Miami/Gulf Stream
+    { location: [25.7617, -80.1918], size: 0.08 }, // Miami/Gulf Stream
   ],
 }
 

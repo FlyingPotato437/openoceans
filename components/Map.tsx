@@ -306,38 +306,6 @@ export default function Map({ buoyData = [], onBuoySelected, className }: MapPro
           />
         </div>
       </div>
-      
-      {/* Map Legend */}
-      <div className="absolute bottom-4 left-4 z-[400] bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-lg shadow-md p-3 max-w-xs">
-        <div className="flex items-center gap-2 mb-2">
-          <Info className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-          <span className="text-xs font-medium text-gray-700 dark:text-gray-300">Buoy Status</span>
-        </div>
-        <div className="space-y-2 text-xs">
-          <div className="flex items-center gap-2">
-            <div className="h-3 w-3 rounded-full bg-seagrass-500 border border-white dark:border-gray-700"></div>
-            <span className="text-gray-600 dark:text-gray-400">Active - Normal operation</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="h-3 w-3 rounded-full bg-amber-500 border border-white dark:border-gray-700"></div>
-            <span className="text-gray-600 dark:text-gray-400">Warning - Needs attention</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="h-3 w-3 rounded-full bg-red-500 border border-white dark:border-gray-700"></div>
-            <span className="text-gray-600 dark:text-gray-400">Offline - Not transmitting</span>
-          </div>
-        </div>
-        
-        <div className="mt-3 pt-2 border-t border-gray-200 dark:border-gray-700">
-          <a 
-            href="#" 
-            className="text-xs text-ocean-600 dark:text-ocean-400 flex items-center gap-1 hover:underline"
-          >
-            <span>View buoy info guide</span>
-            <ArrowUpRight className="h-3 w-3" />
-          </a>
-        </div>
-      </div>
     </div>
   )
 }

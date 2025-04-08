@@ -256,6 +256,33 @@ export default function AboutPage() {
                   </p>
                 </div>
               </div>
+              
+              <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg border border-gray-200 dark:border-gray-700">
+                <div className="p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="relative w-16 h-16 rounded-full overflow-hidden mr-4 bg-ocean-100 dark:bg-ocean-900/40 flex items-center justify-center">
+                      {!imageErrors['team5'] ? (
+                        <Image 
+                          src="https://source.unsplash.com/random/200x200?woman,marine,biologist" 
+                          alt="Dr. Maria Rodriguez"
+                          fill
+                          style={{ objectFit: 'cover' }}
+                          onError={() => handleImageError('team5')}
+                        />
+                      ) : (
+                        <User className="w-8 h-8 text-ocean-500 dark:text-ocean-400" />
+                      )}
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white">Dr. Maria Rodriguez</h3>
+                      <p className="text-ocean-600 dark:text-ocean-400">Marine Biologist</p>
+                    </div>
+                  </div>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">
+                    Specializing in coral health assessment and marine biodiversity monitoring across our global network.
+                  </p>
+                </div>
+              </div>
             </div>
             
             <div className="text-center">

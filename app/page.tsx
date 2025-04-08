@@ -27,6 +27,16 @@ import BuoyDetailPanel from '@/components/BuoyDetailPanel'
 import { Globe } from '@/components/ui/globe'
 import { downloadData } from '@/lib/download'
 
+// Dynamically import the MiniMap component to avoid SSR issues with Leaflet
+const MiniMap = dynamic(() => import('@/components/MiniMap'), {
+  ssr: false,
+  loading: () => (
+    <div className="h-40 w-full bg-gray-100 dark:bg-gray-800 animate-pulse rounded-lg flex items-center justify-center">
+      <p className="text-sm text-gray-500 dark:text-gray-400">Loading map...</p>
+    </div>
+  ),
+})
+
 // Dynamically import the Map component to avoid SSR issues with Leaflet
 const MapComponent = dynamic(() => import('@/components/Map'), {
   ssr: false,
@@ -251,8 +261,8 @@ export default function Home() {
                   >
                     <Globe2 className="h-5 w-5" />
                     <span>Explore Map</span>
-                  </a>
-                  <a
+          </a>
+          <a
                     href="#download-data"
                     className="bg-white dark:bg-gray-800 text-teal-600 dark:text-teal-400 border border-teal-600 dark:border-teal-500 px-6 py-3 rounded-lg font-medium hover:bg-teal-50 dark:hover:bg-gray-700 transition-colors flex items-center gap-2"
                   >
@@ -289,9 +299,9 @@ export default function Home() {
               </div>
             </div>
             
-            <div className="lg:w-1/2 relative h-[500px] lg:h-[700px]">
-              <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[600px] aspect-square">
+            <div className="w-full lg:w-1/2 relative h-[320px] md:h-[400px] lg:h-[550px]">
+              <div className="absolute inset-0 pointer-events-none">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] md:w-[400px] lg:w-[550px] aspect-square">
                   <Globe />
                 </div>
               </div>
@@ -367,7 +377,7 @@ export default function Home() {
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400 mb-4">Click on a buoy marker to view detailed real-time data.</p>
                 <div className="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
-                  <MapComponent buoys={BUOY_DATA} onBuoySelect={handleBuoySelect} />
+                  <MapComponent buoyData={BUOY_DATA} onBuoySelected={handleBuoySelect} />
                 </div>
               </div>
             </div>
@@ -392,6 +402,16 @@ export default function Home() {
                         </span>
                       </div>
                       <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">ID: {buoy.id}</p>
+                      
+                      {/* Add MiniMap for the buoy location */}
+                      <div className="mb-3 rounded-lg overflow-hidden">
+                        <MiniMap 
+                          location={{ lat: buoy.location.lat, lng: buoy.location.lng }}
+                          status="active"
+                          height="h-32"
+                        />
+                      </div>
+                      
                       <div className="text-sm flex items-center gap-2 text-gray-700 dark:text-gray-300">
                         <Thermometer className="h-4 w-4 text-orange-500" />
                         <span>{buoy.data.temperature}°C</span>

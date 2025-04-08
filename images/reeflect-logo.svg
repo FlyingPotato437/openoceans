@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <rect width="400" height="400" rx="200" fill="url(#backgroundGradient)" />
+  
+  <!-- Main circle -->
+  <circle cx="200" cy="200" r="180" stroke="#2DD4BF" stroke-width="5" fill="none" opacity="0.9"/>
+  
+  <!-- Ocean waves -->
+  <path d="M50 220C80 200 120 240 150 220C180 200 220 240 250 220C280 200 320 240 350 220" 
+        stroke="#0EA5E9" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.7"/>
+  <path d="M50 250C80 230 120 270 150 250C180 230 220 270 250 250C280 230 320 270 350 250" 
+        stroke="#0EA5E9" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.5"/>
+  
+  <!-- Coral Reef shapes -->
+  <path d="M180 140C220 100 240 120 260 90" stroke="#F472B6" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M120 160C150 120 170 140 190 120" stroke="#F472B6" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M230 160Q260 140 270 170T290 190" stroke="#F472B6" stroke-width="4" fill="none"/>
+  <path d="M150 220Q170 200 190 230T240 260" stroke="#F472B6" stroke-width="4" fill="none"/>
+  <path d="M120 180Q140 170 130 200T170 240" stroke="#F472B6" stroke-width="4" fill="none"/>
+  <path d="M240 290Q260 270 280 295T300 280" stroke="#F472B6" stroke-width="4" fill="none"/>
+  
+  <!-- Island/land -->
+  <path d="M190 70C240 90 270 130 280 180" stroke="#2DD4BF" stroke-width="5" fill="none"/>
+  
+  <!-- Fish -->
+  <g transform="translate(250, 190) rotate(20)">
+    <path d="M0 0C10 -15 30 -15 40 0C30 15 10 15 0 0Z" fill="#38BDF8" />
+    <circle cx="30" cy="-5" r="3" fill="#0F172A" />
+    <path d="M-5 0L-15 -5L-15 5Z" fill="#38BDF8" />
+  </g>
+  
+  <g transform="translate(150, 170) rotate(-30)">
+    <path d="M0 0C10 -10 25 -10 35 0C25 10 10 10 0 0Z" fill="#22D3EE" />
+    <circle cx="25" cy="-3" r="2" fill="#0F172A" />
+    <path d="M-5 0L-12 -4L-12 4Z" fill="#22D3EE" />
+  </g>
+  
+  <!-- Gradients -->
+  <defs>
+    <linearGradient id="backgroundGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0C4A6E" />
+      <stop offset="100%" stop-color="#164E63" />
+    </linearGradient>
+  </defs>
+</svg> 

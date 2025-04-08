@@ -6,6 +6,17 @@ import { DataVisualizer } from '@/components/ui/DataVisualizer'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
+
+// Import MiniMap with dynamic loading (no SSR) to avoid leaflet issues
+const MiniMap = dynamic(() => import('./MiniMap'), { 
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-40 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+      <div className="animate-pulse text-sm text-gray-500">Loading map...</div>
+    </div>
+  )
+})
 
 type BuoyDetailPanelProps = {
   buoy: {
@@ -139,7 +150,7 @@ export default function BuoyDetailPanel({ buoy, onClose }: BuoyDetailPanelProps)
         <div className="flex-1 overflow-y-auto p-5 bg-gray-50 dark:bg-gray-900">
           {activeTab === 'overview' && (
             <div className="space-y-5">
-              {/* Buoy Location Mini Map */}
+              {/* Buoy Location */}
               <div className="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm">
                 <h3 className="text-lg font-heading font-semibold text-gray-900 dark:text-white mb-4 flex justify-between items-center">
                   <span>Buoy Location</span>
@@ -153,24 +164,14 @@ export default function BuoyDetailPanel({ buoy, onClose }: BuoyDetailPanelProps)
                 </h3>
                 
                 <div className="relative h-40 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
-                  {/* Simplified Map View with Marker */}
-                  <div className="absolute inset-0 bg-ocean-50 dark:bg-ocean-900/30">
-                    <div className="absolute inset-0 bg-[url('/images/buoy-navigation.jpg')] bg-no-repeat bg-cover opacity-90 dark:opacity-70"></div>
-                    
-                    {/* Marker centered in the mini map */}
-                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-                      <div className="relative">
-                        <MapPin className="h-6 w-6 text-red-600 dark:text-red-500 -translate-y-3 drop-shadow-md" />
-                        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-5 w-5 bg-red-600 dark:bg-red-500 rounded-full opacity-20 animate-ping"></div>
-                        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-3 w-3 bg-red-600 dark:bg-red-500 rounded-full -translate-y-1"></div>
-                      </div>
-                    </div>
-                    
-                    {/* Coordinates Display */}
-                    <div className="absolute bottom-2 left-2 right-2 flex justify-between text-xs bg-white/80 dark:bg-gray-800/80 px-2 py-1 rounded shadow-sm">
-                      <span className="font-medium">Lat: {buoy.location.lat.toFixed(6)}</span>
-                      <span className="font-medium">Lng: {buoy.location.lng.toFixed(6)}</span>
-                    </div>
+                  <MiniMap 
+                    location={{ lat: buoy.location.lat, lng: buoy.location.lng }}
+                    status={buoy.status || 'active'}
+                  />
+                  
+                  <div className="absolute bottom-2 left-2 right-2 flex justify-between text-xs bg-white/80 dark:bg-gray-800/80 px-2 py-1 rounded shadow-sm">
+                    <span className="font-medium">Lat: {buoy.location.lat.toFixed(6)}</span>
+                    <span className="font-medium">Lng: {buoy.location.lng.toFixed(6)}</span>
                   </div>
                 </div>
               </div>
