@@ -155,7 +155,7 @@ export default function AboutPage() {
                     <div className="relative w-16 h-16 rounded-full overflow-hidden mr-4 bg-ocean-100 dark:bg-ocean-900/40 flex items-center justify-center">
                       {!imageErrors['srikanth'] ? (
                         <Image 
-                          src="/images/beach-sunset.jpg" 
+                          src="https://source.unsplash.com/random/200x200?portrait,professional" 
                           alt="Srikanth Samy"
                           fill
                           style={{ objectFit: 'cover' }}
@@ -182,7 +182,7 @@ export default function AboutPage() {
                     <div className="relative w-16 h-16 rounded-full overflow-hidden mr-4 bg-ocean-100 dark:bg-ocean-900/40 flex items-center justify-center">
                       {!imageErrors['krishiv'] ? (
                         <Image 
-                          src="/images/algae-water.jpg" 
+                          src="https://source.unsplash.com/random/200x200?portrait,professional,young" 
                           alt="Krishiv Jaini"
                           fill
                           style={{ objectFit: 'cover' }}
@@ -199,87 +199,6 @@ export default function AboutPage() {
                   </div>
                   <p className="text-gray-600 dark:text-gray-400 text-sm">
                     Dublin High School student with expertise in software development and sensor technology. Co-founded REEFlect with a mission to protect marine ecosystems.
-                  </p>
-                </div>
-              </div>
-              
-              <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg border border-gray-200 dark:border-gray-700">
-                <div className="p-6">
-                  <div className="flex items-center mb-4">
-                    <div className="relative w-16 h-16 rounded-full overflow-hidden mr-4 bg-ocean-100 dark:bg-ocean-900/40 flex items-center justify-center">
-                      {!imageErrors['team3'] ? (
-                        <Image 
-                          src="https://source.unsplash.com/random/200x200?woman,scientist" 
-                          alt="Dr. Aisha Johnson"
-                          fill
-                          style={{ objectFit: 'cover' }}
-                          onError={() => handleImageError('team3')}
-                        />
-                      ) : (
-                        <User className="w-8 h-8 text-ocean-500 dark:text-ocean-400" />
-                      )}
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white">Dr. Aisha Johnson</h3>
-                      <p className="text-ocean-600 dark:text-ocean-400">Data Science Director</p>
-                    </div>
-                  </div>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm">
-                    Leading our data analytics team with expertise in machine learning and oceanographic data modeling.
-                  </p>
-                </div>
-              </div>
-              
-              <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg border border-gray-200 dark:border-gray-700">
-                <div className="p-6">
-                  <div className="flex items-center mb-4">
-                    <div className="relative w-16 h-16 rounded-full overflow-hidden mr-4 bg-ocean-100 dark:bg-ocean-900/40 flex items-center justify-center">
-                      {!imageErrors['team4'] ? (
-                        <Image 
-                          src="https://source.unsplash.com/random/200x200?man,scientist,researcher" 
-                          alt="Dr. James Wilson"
-                          fill
-                          style={{ objectFit: 'cover' }}
-                          onError={() => handleImageError('team4')}
-                        />
-                      ) : (
-                        <User className="w-8 h-8 text-ocean-500 dark:text-ocean-400" />
-                      )}
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white">Dr. James Wilson</h3>
-                      <p className="text-ocean-600 dark:text-ocean-400">Conservation Director</p>
-                    </div>
-                  </div>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm">
-                    Environmental policy expert with a focus on translating ocean data into conservation action and policy.
-                  </p>
-                </div>
-              </div>
-              
-              <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg border border-gray-200 dark:border-gray-700">
-                <div className="p-6">
-                  <div className="flex items-center mb-4">
-                    <div className="relative w-16 h-16 rounded-full overflow-hidden mr-4 bg-ocean-100 dark:bg-ocean-900/40 flex items-center justify-center">
-                      {!imageErrors['team5'] ? (
-                        <Image 
-                          src="https://source.unsplash.com/random/200x200?woman,marine,biologist" 
-                          alt="Dr. Maria Rodriguez"
-                          fill
-                          style={{ objectFit: 'cover' }}
-                          onError={() => handleImageError('team5')}
-                        />
-                      ) : (
-                        <User className="w-8 h-8 text-ocean-500 dark:text-ocean-400" />
-                      )}
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white">Dr. Maria Rodriguez</h3>
-                      <p className="text-ocean-600 dark:text-ocean-400">Marine Biologist</p>
-                    </div>
-                  </div>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm">
-                    Specializing in coral health assessment and marine biodiversity monitoring across our global network.
                   </p>
                 </div>
               </div>

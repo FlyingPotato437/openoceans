@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, ChevronDown, Search, Moon, Sun, Thermometer, Waves, Droplet, Database, BookOpen, Info, MapPin, Globe2 } from 'lucide-react'
 import { ThemeSwitcher } from './ThemeSwitcher'
 import { cn } from '@/lib/utils'
+import { useAuth } from '@/contexts/AuthContext'
 
 const MENU_ITEMS = [
   {
@@ -52,6 +53,7 @@ export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
+  const { isResearchAuthorized } = useAuth()
   
   useEffect(() => {
     const handleScroll = () => {
@@ -113,70 +115,76 @@ export default function Navigation() {
           
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1">
-            {MENU_ITEMS.map((item) => (
-              <div key={item.name} className="relative">
-                {item.children ? (
-                  <button 
-                    onClick={() => toggleDropdown(item.name)}
-                    className={cn(
-                      "px-3 py-2 text-sm font-medium rounded-lg flex items-center gap-1.5 transition-colors",
-                      isActive(item.href) 
-                        ? "text-ocean-700 dark:text-ocean-400 bg-ocean-50 dark:bg-ocean-900/40" 
-                        : "text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
-                    )}
-                  >
-                    <span className="hidden sm:block">{item.icon}</span>
-                    <span>{item.name}</span>
-                    <ChevronDown 
+            {MENU_ITEMS.map((item) => {
+              if (item.name === 'Research' && !isResearchAuthorized) {
+                return null;
+              }
+              
+              return (
+                <div key={item.name} className="relative">
+                  {item.children ? (
+                    <button 
+                      onClick={() => toggleDropdown(item.name)}
                       className={cn(
-                        "h-4 w-4 transition-transform duration-200",
-                        openDropdown === item.name ? "rotate-180" : ""
-                      )} 
-                    />
-                  </button>
-                ) : (
-                  <Link 
-                    href={item.href}
-                    className={cn(
-                      "px-3 py-2 text-sm font-medium rounded-lg flex items-center gap-1.5 transition-colors",
-                      isActive(item.href) 
-                        ? "text-ocean-700 dark:text-ocean-400 bg-ocean-50 dark:bg-ocean-900/40" 
-                        : "text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
-                    )}
-                  >
-                    <span className="hidden sm:block">{item.icon}</span>
-                    <span>{item.name}</span>
-                  </Link>
-                )}
-                
-                <AnimatePresence>
-                  {item.children && openDropdown === item.name && (
-                    <motion.div 
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.2 }}
-                      className="absolute left-0 mt-1 bg-white dark:bg-gray-900 shadow-lg rounded-lg py-1 w-48 border border-gray-200 dark:border-gray-800"
+                        "px-3 py-2 text-sm font-medium rounded-lg flex items-center gap-1.5 transition-colors",
+                        isActive(item.href) 
+                          ? "text-ocean-700 dark:text-ocean-400 bg-ocean-50 dark:bg-ocean-900/40" 
+                          : "text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
+                      )}
                     >
-                      {item.children.map((child) => (
-                        <Link 
-                          key={child.name} 
-                          href={child.href}
-                          className={cn(
-                            "block px-4 py-2 text-sm transition-colors",
-                            pathname === child.href
-                              ? "text-ocean-600 dark:text-ocean-400 bg-ocean-50 dark:bg-ocean-900/30"
-                              : "text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
-                          )}
-                        >
-                          {child.name}
-                        </Link>
-                      ))}
-                    </motion.div>
+                      <span className="hidden sm:block">{item.icon}</span>
+                      <span>{item.name}</span>
+                      <ChevronDown 
+                        className={cn(
+                          "h-4 w-4 transition-transform duration-200",
+                          openDropdown === item.name ? "rotate-180" : ""
+                        )} 
+                      />
+                    </button>
+                  ) : (
+                    <Link 
+                      href={item.href}
+                      className={cn(
+                        "px-3 py-2 text-sm font-medium rounded-lg flex items-center gap-1.5 transition-colors",
+                        isActive(item.href) 
+                          ? "text-ocean-700 dark:text-ocean-400 bg-ocean-50 dark:bg-ocean-900/40" 
+                          : "text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
+                      )}
+                    >
+                      <span className="hidden sm:block">{item.icon}</span>
+                      <span>{item.name}</span>
+                    </Link>
                   )}
-                </AnimatePresence>
-              </div>
-            ))}
+                  
+                  <AnimatePresence>
+                    {item.children && openDropdown === item.name && (
+                      <motion.div 
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute left-0 mt-1 bg-white dark:bg-gray-900 shadow-lg rounded-lg py-1 w-48 border border-gray-200 dark:border-gray-800"
+                      >
+                        {item.children.map((child) => (
+                          <Link 
+                            key={child.name} 
+                            href={child.href}
+                            className={cn(
+                              "block px-4 py-2 text-sm transition-colors",
+                              pathname === child.href
+                                ? "text-ocean-600 dark:text-ocean-400 bg-ocean-50 dark:bg-ocean-900/30"
+                                : "text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
+                            )}
+                          >
+                            {child.name}
+                          </Link>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              )
+            })}
             
             <div className="h-6 border-l border-gray-300 dark:border-gray-700 mx-1" />
             
@@ -213,74 +221,80 @@ export default function Navigation() {
           >
             <nav className="container mx-auto px-4 py-4 max-h-[70vh] overflow-y-auto pb-20">
               <div className="space-y-2">
-                {MENU_ITEMS.map((item) => (
-                  <Fragment key={item.name}>
-                    {item.children ? (
-                      <div className="border-b border-gray-100 dark:border-gray-800 pb-2 mb-2">
-                        <button 
-                          onClick={() => toggleDropdown(item.name)}
-                          className="flex items-center justify-between w-full py-3 px-2 rounded-lg"
-                        >
-                          <div className="flex items-center gap-3">
-                            <span className="text-ocean-600 dark:text-ocean-400">{item.icon}</span>
-                            <span className={cn(
-                              "text-base font-medium",
-                              isActive(item.href) ? "text-ocean-700 dark:text-ocean-400" : "text-gray-900 dark:text-white"
-                            )}>
-                              {item.name}
-                            </span>
-                          </div>
-                          <ChevronDown 
-                            className={cn(
-                              "h-5 w-5 text-gray-500 transition-transform duration-200",
-                              openDropdown === item.name ? "rotate-180" : ""
-                            )} 
-                          />
-                        </button>
-                        
-                        <AnimatePresence>
-                          {openDropdown === item.name && (
-                            <motion.div
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: 'auto' }}
-                              exit={{ opacity: 0, height: 0 }}
-                              transition={{ duration: 0.2 }}
-                              className="mt-1 pl-10 border-l-2 border-ocean-100 dark:border-ocean-900/50 ml-3 space-y-2"
-                            >
-                              {item.children.map((child) => (
-                                <Link 
-                                  key={child.name} 
-                                  href={child.href}
-                                  className={cn(
-                                    "block py-2 text-sm font-medium transition-colors",
-                                    pathname === child.href
-                                      ? "text-ocean-600 dark:text-ocean-400"
-                                      : "text-gray-700 dark:text-gray-300 hover:text-ocean-600 dark:hover:text-ocean-400"
-                                  )}
-                                >
-                                  {child.name}
-                                </Link>
-                              ))}
-                            </motion.div>
+                {MENU_ITEMS.map((item) => {
+                  if (item.name === 'Research' && !isResearchAuthorized) {
+                    return null;
+                  }
+                  
+                  return (
+                    <Fragment key={item.name}>
+                      {item.children ? (
+                        <div className="border-b border-gray-100 dark:border-gray-800 pb-2 mb-2">
+                          <button 
+                            onClick={() => toggleDropdown(item.name)}
+                            className="flex items-center justify-between w-full py-3 px-2 rounded-lg"
+                          >
+                            <div className="flex items-center gap-3">
+                              <span className="text-ocean-600 dark:text-ocean-400">{item.icon}</span>
+                              <span className={cn(
+                                "text-base font-medium",
+                                isActive(item.href) ? "text-ocean-700 dark:text-ocean-400" : "text-gray-900 dark:text-white"
+                              )}>
+                                {item.name}
+                              </span>
+                            </div>
+                            <ChevronDown 
+                              className={cn(
+                                "h-5 w-5 text-gray-500 transition-transform duration-200",
+                                openDropdown === item.name ? "rotate-180" : ""
+                              )} 
+                            />
+                          </button>
+                          
+                          <AnimatePresence>
+                            {openDropdown === item.name && (
+                              <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                transition={{ duration: 0.2 }}
+                                className="mt-1 pl-10 border-l-2 border-ocean-100 dark:border-ocean-900/50 ml-3 space-y-2"
+                              >
+                                {item.children.map((child) => (
+                                  <Link 
+                                    key={child.name} 
+                                    href={child.href}
+                                    className={cn(
+                                      "block py-2 text-sm font-medium transition-colors",
+                                      pathname === child.href
+                                        ? "text-ocean-600 dark:text-ocean-400"
+                                        : "text-gray-700 dark:text-gray-300 hover:text-ocean-600 dark:hover:text-ocean-400"
+                                    )}
+                                  >
+                                    {child.name}
+                                  </Link>
+                                ))}
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      ) : (
+                        <Link 
+                          href={item.href}
+                          className={cn(
+                            "flex items-center gap-3 py-3 px-2 text-base font-medium border-b border-gray-100 dark:border-gray-800 pb-2 mb-2 rounded-lg",
+                            isActive(item.href) 
+                              ? "text-ocean-700 dark:text-ocean-400" 
+                              : "text-gray-900 dark:text-white"
                           )}
-                        </AnimatePresence>
-                      </div>
-                    ) : (
-                      <Link 
-                        href={item.href}
-                        className={cn(
-                          "flex items-center gap-3 py-3 px-2 text-base font-medium border-b border-gray-100 dark:border-gray-800 pb-2 mb-2 rounded-lg",
-                          isActive(item.href) 
-                            ? "text-ocean-700 dark:text-ocean-400" 
-                            : "text-gray-900 dark:text-white"
-                        )}
-                      >
-                        <span className="text-ocean-600 dark:text-ocean-400">{item.icon}</span>
-                        {item.name}
-                      </Link>
-                    )}
-                  </Fragment>
-                ))}
+                        >
+                          <span className="text-ocean-600 dark:text-ocean-400">{item.icon}</span>
+                          {item.name}
+                        </Link>
+                      )}
+                    </Fragment>
+                  )
+                })}
               </div>
               
               <div className="pt-4 mt-4">

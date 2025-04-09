@@ -137,7 +137,7 @@ export default function DataPage() {
                 <div className="bg-ocean-600 dark:bg-ocean-900 relative hidden md:block">
                   <div className="absolute inset-0">
                     <Image 
-                      src="/images/coral-data.jpg" 
+                      src="https://source.unsplash.com/random/1200x800?coral,reef,ocean" 
                       alt="Coral reef data visualization"
                       fill
                       style={{ objectFit: 'cover' }}

@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { FileText, Users, BookOpen, ArrowUpRight, BookMarked, BarChart3, FlaskConical, ExternalLink, Image as ImageIcon } from 'lucide-react'
+import { FileText, Users, BookOpen, ArrowUpRight, BookMarked, BarChart3, FlaskConical, ExternalLink, Image as ImageIcon, Lock, KeyRound } from 'lucide-react'
+import { useAuth } from '@/contexts/AuthContext'
 
 // Research projects data
 const RESEARCH_PROJECTS = [
@@ -11,7 +12,7 @@ const RESEARCH_PROJECTS = [
     id: 'coral-bleaching',
     title: 'Coral Reef Bleaching Early Warning System',
     description: 'Developing an AI-powered early warning system for detecting and predicting coral bleaching events based on temperature anomalies and other environmental factors.',
-    image: '/images/coral-reef.jpg',
+    image: 'https://source.unsplash.com/random/800x600?coral,reef,bleaching',
     status: 'Active',
     partners: ['REEFlect Foundation', 'University of Queensland', 'NOAA'],
     publications: 2,
@@ -21,7 +22,7 @@ const RESEARCH_PROJECTS = [
     id: 'ocean-acidification',
     title: 'Global Ocean Acidification Monitoring',
     description: 'Tracking pH changes across the global ocean to understand the pace and impacts of ocean acidification on marine ecosystems and carbon cycling.',
-    image: '/images/beach-sunset.jpg',
+    image: 'https://source.unsplash.com/random/800x600?ocean,water,blue',
     status: 'Active',
     partners: ['Global Ocean Observing System', 'Scripps Institution of Oceanography'],
     publications: 5,
@@ -31,7 +32,7 @@ const RESEARCH_PROJECTS = [
     id: 'marine-heatwaves',
     title: 'Marine Heatwave Dynamics and Ecosystem Impacts',
     description: 'Investigating the frequency, intensity, and ecological impacts of marine heatwaves in a changing climate.',
-    image: '/images/iceberg.jpg',
+    image: 'https://source.unsplash.com/random/800x600?ocean,waves,sunset',
     status: 'Active',
     partners: ['Woods Hole Oceanographic Institution', 'REEFlect Foundation'],
     publications: 3,
@@ -41,7 +42,7 @@ const RESEARCH_PROJECTS = [
     id: 'oxygen-decline',
     title: 'Deoxygenation Trends in Coastal Waters',
     description: 'Monitoring dissolved oxygen levels in coastal regions to track the expansion of hypoxic zones and their effects on marine life.',
-    image: '/images/algae-water.jpg',
+    image: 'https://source.unsplash.com/random/800x600?coastal,shore,beach',
     status: 'Active',
     partners: ['Coastal Ocean Observation Lab', 'University of Washington'],
     publications: 1,
@@ -87,9 +88,93 @@ const RECENT_PUBLICATIONS = [
 
 export default function ResearchPage() {
   const [imageErrors, setImageErrors] = useState<{[key: string]: boolean}>({})
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const { isResearchAuthorized, authorizeResearch } = useAuth()
   
   const handleImageError = (imageId: string) => {
     setImageErrors(prev => ({...prev, [imageId]: true}))
+  }
+  
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    const isValid = authorizeResearch(password)
+    
+    if (!isValid) {
+      setError('Invalid password. Try again.')
+    }
+  }
+  
+  if (!isResearchAuthorized) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <section className="bg-gradient-to-br from-ocean-50 via-ocean-100 to-ocean-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-20">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="max-w-3xl mx-auto text-center">
+              <h1 className="text-4xl md:text-5xl font-heading font-bold text-gray-900 dark:text-white mb-4">
+                Ocean <span className="text-ocean-600 dark:text-ocean-400">Research</span>
+              </h1>
+              <p className="text-xl text-gray-700 dark:text-gray-300 mb-8">
+                Our research section is password-protected
+              </p>
+            </div>
+          </div>
+        </section>
+        
+        <section className="py-16 bg-white dark:bg-gray-900 flex-1 flex items-center justify-center">
+          <div className="max-w-md w-full mx-auto px-4">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 p-8">
+              <div className="flex items-center justify-center mb-6">
+                <div className="w-16 h-16 bg-ocean-100 dark:bg-ocean-900 rounded-full flex items-center justify-center">
+                  <Lock className="h-8 w-8 text-ocean-600 dark:text-ocean-400" />
+                </div>
+              </div>
+              
+              <h2 className="text-xl font-bold text-center text-gray-900 dark:text-white mb-6">
+                Password Required
+              </h2>
+              
+              <form onSubmit={handleSubmit}>
+                {error && (
+                  <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 mb-4 text-sm text-red-800 dark:text-red-300">
+                    {error}
+                  </div>
+                )}
+                
+                <div className="mb-4">
+                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Enter password to access research
+                  </label>
+                  <div className="relative">
+                    <KeyRound className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <input
+                      id="password"
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="pl-10 w-full px-4 py-2 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-ocean-500 dark:focus:ring-ocean-400"
+                      placeholder="Enter password"
+                      required
+                    />
+                  </div>
+                </div>
+                
+                <button
+                  type="submit"
+                  className="w-full bg-ocean-600 hover:bg-ocean-700 dark:bg-ocean-600 dark:hover:bg-ocean-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+                >
+                  Access Research
+                </button>
+              </form>
+              
+              <div className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
+                <p>Return to <Link href="/" className="text-ocean-600 dark:text-ocean-400 hover:underline">homepage</Link></p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    )
   }
   
   return (
@@ -293,7 +378,7 @@ export default function ResearchPage() {
                   <div className="relative h-48 rounded-lg overflow-hidden mt-4 bg-gradient-to-br from-ocean-500/20 to-ocean-600/20">
                     {!imageErrors['coral-monitoring'] ? (
                       <Image 
-                        src="/images/coral-reef.jpg" 
+                        src="https://source.unsplash.com/random/800x600?coral,underwater" 
                         alt="Coral monitoring visualization"
                         fill
                         style={{ objectFit: 'cover' }}
@@ -319,7 +404,7 @@ export default function ResearchPage() {
                   <div className="relative h-48 rounded-lg overflow-hidden mt-4 bg-gradient-to-br from-ocean-500/20 to-ocean-600/20">
                     {!imageErrors['temperature-trends'] ? (
                       <Image 
-                        src="/images/iceberg.jpg" 
+                        src="https://source.unsplash.com/random/800x600?ocean,horizon" 
                         alt="Global temperature trends visualization"
                         fill
                         style={{ objectFit: 'cover' }}
@@ -345,7 +430,7 @@ export default function ResearchPage() {
                   <div className="relative h-48 rounded-lg overflow-hidden mt-4 bg-gradient-to-br from-ocean-500/20 to-ocean-600/20">
                     {!imageErrors['acidification-map'] ? (
                       <Image 
-                        src="/images/buoy-navigation.jpg" 
+                        src="https://source.unsplash.com/random/800x600?ocean,deep,water" 
                         alt="Ocean acidification map"
                         fill
                         style={{ objectFit: 'cover' }}
