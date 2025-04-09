@@ -147,7 +147,7 @@ export default function DataPage() {
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="relative w-48 h-48">
                       <Image 
-                        src="/images/reeflect-logo.png" 
+                        src="/images/reeflect-logo.svg" 
                         alt="REEFlect Logo"
                         fill
                         style={{ objectFit: 'contain' }}

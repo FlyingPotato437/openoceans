@@ -97,6 +97,73 @@ const API_ENDPOINTS = [
       { name: 'risk_level', type: 'string', required: false, description: 'Filter by bleaching risk level (low, medium, high)' }
     ],
     example: 'https://api.openocean.org/v1/reef/health?api_key=YOUR_API_KEY'
+  },
+  {
+    path: '/v1/currents',
+    method: 'GET',
+    description: 'Get ocean current velocity and direction data',
+    parameters: [
+      { name: 'api_key', type: 'string', required: true, description: 'Your API authentication key' },
+      { name: 'region', type: 'string', required: false, description: 'Filter by geographic region' },
+      { name: 'depth', type: 'number', required: false, description: 'Filter by depth in meters' }
+    ],
+    example: 'https://api.openocean.org/v1/currents?api_key=YOUR_API_KEY&region=pacific'
+  },
+  {
+    path: '/v1/biodiversity',
+    method: 'GET',
+    description: 'Get marine biodiversity index and species abundance data',
+    parameters: [
+      { name: 'api_key', type: 'string', required: true, description: 'Your API authentication key' },
+      { name: 'region', type: 'string', required: false, description: 'Filter by geographic region' },
+      { name: 'species_group', type: 'string', required: false, description: 'Filter by species group (fish, coral, algae, etc.)' }
+    ],
+    example: 'https://api.openocean.org/v1/biodiversity?api_key=YOUR_API_KEY'
+  },
+  {
+    path: '/v1/turbidity',
+    method: 'GET',
+    description: 'Get water clarity and particle suspension measurements',
+    parameters: [
+      { name: 'api_key', type: 'string', required: true, description: 'Your API authentication key' },
+      { name: 'region', type: 'string', required: false, description: 'Filter by geographic region' },
+      { name: 'start_date', type: 'string', required: false, description: 'Start date for time-series data (YYYY-MM-DD)' },
+      { name: 'end_date', type: 'string', required: false, description: 'End date for time-series data (YYYY-MM-DD)' }
+    ],
+    example: 'https://api.openocean.org/v1/turbidity?api_key=YOUR_API_KEY&region=coastal'
+  },
+  {
+    path: '/v1/chlorophyll',
+    method: 'GET',
+    description: 'Get chlorophyll concentration data for phytoplankton activity',
+    parameters: [
+      { name: 'api_key', type: 'string', required: true, description: 'Your API authentication key' },
+      { name: 'region', type: 'string', required: false, description: 'Filter by geographic region' },
+      { name: 'depth', type: 'number', required: false, description: 'Filter by depth in meters' }
+    ],
+    example: 'https://api.openocean.org/v1/chlorophyll?api_key=YOUR_API_KEY'
+  },
+  {
+    path: '/v1/waves',
+    method: 'GET',
+    description: 'Get wave height, frequency, and direction measurements',
+    parameters: [
+      { name: 'api_key', type: 'string', required: true, description: 'Your API authentication key' },
+      { name: 'region', type: 'string', required: false, description: 'Filter by geographic region' },
+      { name: 'storm_event', type: 'boolean', required: false, description: 'Filter for storm event data only' }
+    ],
+    example: 'https://api.openocean.org/v1/waves?api_key=YOUR_API_KEY'
+  },
+  {
+    path: '/v1/microplastics',
+    method: 'GET',
+    description: 'Get microplastic particle concentration data',
+    parameters: [
+      { name: 'api_key', type: 'string', required: true, description: 'Your API authentication key' },
+      { name: 'region', type: 'string', required: false, description: 'Filter by geographic region' },
+      { name: 'particle_size', type: 'string', required: false, description: 'Filter by particle size range (micro, nano)' }
+    ],
+    example: 'https://api.openocean.org/v1/microplastics?api_key=YOUR_API_KEY&region=pacific_gyre'
   }
 ]
 

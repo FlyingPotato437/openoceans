@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Search, Filter, ChevronDown, ArrowDownToLine, BarChart3, Waves, Droplet, Beaker, ArrowLeft } from 'lucide-react'
+import Image from 'next/image'
+import { Search, Filter, ChevronDown, ArrowDownToLine, BarChart3, Waves, Droplet, Beaker, ArrowLeft, ThermometerSnowflake, Wind, Microscope, CloudLightning } from 'lucide-react'
 
 // Sample dataset categories
 const CATEGORIES = [
@@ -12,6 +13,12 @@ const CATEGORIES = [
   { id: 'ph', name: 'pH Levels' },
   { id: 'oxygen', name: 'Dissolved Oxygen' },
   { id: 'reef', name: 'REEFlect Coral Data' },
+  { id: 'currents', name: 'Ocean Currents' },
+  { id: 'biodiversity', name: 'Marine Biodiversity' },
+  { id: 'turbidity', name: 'Water Turbidity' },
+  { id: 'chlorophyll', name: 'Chlorophyll' },
+  { id: 'wave', name: 'Wave Dynamics' },
+  { id: 'microplastics', name: 'Microplastics' }
 ]
 
 // Sample datasets
@@ -28,7 +35,8 @@ const ALL_DATASETS = [
     region: 'Global',
     buoys: 'All',
     timeframe: '2020-2023',
-    frequency: 'Hourly'
+    frequency: 'Hourly',
+    image: '/images/temp-data.jpg'
   },
   {
     id: 'pacific-temp',
@@ -42,7 +50,8 @@ const ALL_DATASETS = [
     region: 'Pacific',
     buoys: 'B001, B008, B015',
     timeframe: '2020-2023',
-    frequency: 'Hourly'
+    frequency: 'Hourly',
+    image: '/images/temp-data.jpg'
   },
   {
     id: 'global-salinity',
@@ -56,7 +65,8 @@ const ALL_DATASETS = [
     region: 'Global',
     buoys: 'All',
     timeframe: '2020-2023',
-    frequency: 'Hourly'
+    frequency: 'Hourly',
+    image: '/images/salinity-data.jpg'
   },
   {
     id: 'global-ph',
@@ -70,7 +80,8 @@ const ALL_DATASETS = [
     region: 'Global',
     buoys: 'All',
     timeframe: '2020-2023',
-    frequency: 'Hourly'
+    frequency: 'Hourly',
+    image: '/images/ph-data.jpg'
   },
   {
     id: 'global-oxygen',
@@ -84,7 +95,8 @@ const ALL_DATASETS = [
     region: 'Global',
     buoys: 'All',
     timeframe: '2020-2023',
-    frequency: 'Hourly'
+    frequency: 'Hourly',
+    image: '/images/oxygen-data.jpg'
   },
   {
     id: 'reef-health',
@@ -98,7 +110,8 @@ const ALL_DATASETS = [
     region: 'Coral Reefs',
     buoys: 'B002, B014, B015',
     timeframe: '2021-2023',
-    frequency: 'Hourly'
+    frequency: 'Hourly',
+    image: '/images/coral-data.jpg'
   },
   {
     id: 'reef-temperature',
@@ -112,7 +125,8 @@ const ALL_DATASETS = [
     region: 'Coral Reefs',
     buoys: 'B002, B014, B015',
     timeframe: '2021-2023',
-    frequency: '15 Minutes'
+    frequency: '15 Minutes',
+    image: '/images/coral-data.jpg'
   },
   {
     id: 'complete-multi',
@@ -126,8 +140,174 @@ const ALL_DATASETS = [
     region: 'Global',
     buoys: 'All',
     timeframe: '2020-2023',
-    frequency: 'Hourly'
+    frequency: 'Hourly',
+    image: '/images/complete-data.jpg'
   },
+  {
+    id: 'global-currents',
+    name: 'Global Ocean Currents',
+    description: 'Surface and deep-water current velocity and direction measurements from our global monitoring network.',
+    category: 'currents',
+    size: '31.2 MB',
+    format: 'CSV, JSON, Excel',
+    lastUpdated: '2023-11-25',
+    icon: <Wind className="h-5 w-5 text-blue-600 dark:text-blue-400" />,
+    region: 'Global',
+    buoys: 'All',
+    timeframe: '2019-2023',
+    frequency: '12 hours',
+    image: '/images/currents-data.jpg'
+  },
+  {
+    id: 'atlantic-currents',
+    name: 'Atlantic Ocean Currents',
+    description: 'Detailed current patterns for the Atlantic Ocean with Gulf Stream analysis and seasonal variations.',
+    category: 'currents',
+    size: '18.4 MB',
+    format: 'CSV, JSON, Excel',
+    lastUpdated: '2023-11-25',
+    icon: <Wind className="h-5 w-5 text-blue-600 dark:text-blue-400" />,
+    region: 'Atlantic',
+    buoys: 'B003, B007, B011',
+    timeframe: '2019-2023',
+    frequency: '12 hours',
+    image: '/images/currents-data.jpg'
+  },
+  {
+    id: 'marine-biodiversity',
+    name: 'Marine Biodiversity Index',
+    description: 'Species diversity and abundance data from our monitoring stations in biodiversity hotspots.',
+    category: 'biodiversity',
+    size: '19.8 MB',
+    format: 'CSV, JSON, Excel',
+    lastUpdated: '2023-11-24',
+    icon: <Microscope className="h-5 w-5 text-green-600 dark:text-green-400" />,
+    region: 'Global Hotspots',
+    buoys: 'B002, B014, B015, B022',
+    timeframe: '2021-2023',
+    frequency: 'Monthly',
+    image: '/images/biodiversity-data.jpg'
+  },
+  {
+    id: 'reef-biodiversity',
+    name: 'Coral Reef Biodiversity',
+    description: 'Detailed species diversity and abundance data specifically from coral reef ecosystems.',
+    category: 'biodiversity',
+    size: '14.5 MB',
+    format: 'CSV, JSON, Excel',
+    lastUpdated: '2023-11-24',
+    icon: <Microscope className="h-5 w-5 text-green-600 dark:text-green-400" />,
+    region: 'Coral Reefs',
+    buoys: 'B002, B014, B015',
+    timeframe: '2021-2023',
+    frequency: 'Monthly',
+    image: '/images/biodiversity-data.jpg'
+  },
+  {
+    id: 'global-turbidity',
+    name: 'Global Water Turbidity',
+    description: 'Water clarity and particle suspension measurements from coastal and river delta stations.',
+    category: 'turbidity',
+    size: '16.4 MB',
+    format: 'CSV, JSON, Excel',
+    lastUpdated: '2023-11-23',
+    icon: <Droplet className="h-5 w-5 text-blue-600 dark:text-blue-400" />,
+    region: 'Coastal, River Deltas',
+    buoys: 'Coastal Network',
+    timeframe: '2020-2023',
+    frequency: 'Daily',
+    image: '/images/turbidity-data.jpg'
+  },
+  {
+    id: 'global-chlorophyll',
+    name: 'Global Chlorophyll Concentrations',
+    description: 'Phytoplankton activity indicators measured via chlorophyll concentrations across our global network.',
+    category: 'chlorophyll',
+    size: '21.7 MB',
+    format: 'CSV, JSON, Excel',
+    lastUpdated: '2023-11-22',
+    icon: <Beaker className="h-5 w-5 text-green-600 dark:text-green-400" />,
+    region: 'Global',
+    buoys: 'All',
+    timeframe: '2020-2023',
+    frequency: '3 days',
+    image: '/images/chlorophyll-data.jpg'
+  },
+  {
+    id: 'upwelling-chlorophyll',
+    name: 'Upwelling Zone Chlorophyll',
+    description: 'High-resolution chlorophyll data from oceanic upwelling zones with productivity analysis.',
+    category: 'chlorophyll',
+    size: '16.2 MB',
+    format: 'CSV, JSON, Excel',
+    lastUpdated: '2023-11-22',
+    icon: <Beaker className="h-5 w-5 text-green-600 dark:text-green-400" />,
+    region: 'Upwelling Zones',
+    buoys: 'B005, B008, B019',
+    timeframe: '2020-2023',
+    frequency: 'Daily',
+    image: '/images/chlorophyll-data.jpg'
+  },
+  {
+    id: 'global-wave',
+    name: 'Global Wave Height & Frequency',
+    description: 'Wave dynamics data including height, frequency, and direction from our open ocean stations.',
+    category: 'wave',
+    size: '25.9 MB',
+    format: 'CSV, JSON, Excel',
+    lastUpdated: '2023-11-21',
+    icon: <Waves className="h-5 w-5 text-blue-600 dark:text-blue-400" />,
+    region: 'Open Ocean',
+    buoys: 'Open Ocean Network',
+    timeframe: '2019-2023',
+    frequency: 'Hourly',
+    image: '/images/wave-data.jpg'
+  },
+  {
+    id: 'storm-wave',
+    name: 'Storm-Generated Wave Data',
+    description: 'Special dataset of wave measurements during major storm events with extreme condition analysis.',
+    category: 'wave',
+    size: '18.3 MB',
+    format: 'CSV, JSON, Excel',
+    lastUpdated: '2023-11-21',
+    icon: <CloudLightning className="h-5 w-5 text-blue-600 dark:text-blue-400" />,
+    region: 'Storm Regions',
+    buoys: 'Storm-tracking Network',
+    timeframe: '2019-2023',
+    frequency: '15 Minutes',
+    image: '/images/wave-data.jpg'
+  },
+  {
+    id: 'global-microplastics',
+    name: 'Global Microplastics Concentration',
+    description: 'Measurements of microplastic particles in water samples from our global sensor network.',
+    category: 'microplastics',
+    size: '14.3 MB',
+    format: 'CSV, JSON, Excel',
+    lastUpdated: '2023-11-20',
+    icon: <Microscope className="h-5 w-5 text-red-600 dark:text-red-400" />,
+    region: 'Global Hotspots',
+    buoys: 'Specialized Network',
+    timeframe: '2021-2023',
+    frequency: 'Weekly',
+    image: '/images/microplastics-data.jpg'
+  },
+  {
+    id: 'gyres-microplastics',
+    name: 'Ocean Gyres Microplastics',
+    description: 'Focused dataset on microplastic concentration in the five major ocean gyres with pollution tracking.',
+    category: 'microplastics',
+    size: '11.8 MB',
+    format: 'CSV, JSON, Excel',
+    lastUpdated: '2023-11-20',
+    icon: <Microscope className="h-5 w-5 text-red-600 dark:text-red-400" />,
+    region: 'Pacific, Atlantic Gyres',
+    buoys: 'B006, B012, B017',
+    timeframe: '2021-2023',
+    frequency: 'Weekly',
+    image: '/images/microplastics-data.jpg'
+  }
 ]
 
 export default function BrowseDataPage() {
@@ -199,11 +379,11 @@ export default function BrowseDataPage() {
                   <button
                     key={category.id}
                     onClick={() => setSelectedCategory(category.id)}
-                    className={`px-3 py-1 rounded-full text-sm ${
-                      selectedCategory === category.id 
-                        ? 'bg-ocean-500 text-white' 
+                    className={`px-3 py-1.5 rounded-full text-sm font-medium ${
+                      selectedCategory === category.id
+                        ? 'bg-ocean-600 dark:bg-ocean-500 text-white'
                         : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                    } transition-colors`}
+                    }`}
                   >
                     {category.name}
                   </button>
@@ -217,84 +397,74 @@ export default function BrowseDataPage() {
       <div className="flex-1 bg-white dark:bg-gray-900 py-8">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
-            <div className="mb-6 flex justify-between items-center">
-              <h2 className="text-lg font-medium text-gray-700 dark:text-gray-300">
-                {filteredDatasets.length} {filteredDatasets.length === 1 ? 'dataset' : 'datasets'} found
-              </h2>
-            </div>
-            
-            <div className="space-y-6">
-              {filteredDatasets.map(dataset => (
-                <div key={dataset.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-                  <div className="p-6">
-                    <div className="flex items-start">
-                      <div className="rounded-full bg-blue-100 dark:bg-blue-900 p-2 mr-4">
-                        {dataset.icon}
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{dataset.name}</h3>
-                        <p className="text-gray-600 dark:text-gray-400 mb-4">{dataset.description}</p>
-                        
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
-                          <div>
-                            <div className="text-xs text-gray-500 dark:text-gray-400">Region</div>
-                            <div className="text-sm font-medium text-gray-900 dark:text-white">{dataset.region}</div>
-                          </div>
-                          <div>
-                            <div className="text-xs text-gray-500 dark:text-gray-400">Buoys</div>
-                            <div className="text-sm font-medium text-gray-900 dark:text-white">{dataset.buoys}</div>
-                          </div>
-                          <div>
-                            <div className="text-xs text-gray-500 dark:text-gray-400">Timeframe</div>
-                            <div className="text-sm font-medium text-gray-900 dark:text-white">{dataset.timeframe}</div>
-                          </div>
-                          <div>
-                            <div className="text-xs text-gray-500 dark:text-gray-400">Frequency</div>
-                            <div className="text-sm font-medium text-gray-900 dark:text-white">{dataset.frequency}</div>
-                          </div>
-                        </div>
-                        
-                        <div className="flex flex-wrap justify-between items-center border-t border-gray-200 dark:border-gray-700 pt-4">
-                          <div className="flex items-center space-x-4">
-                            <div>
-                              <div className="text-xs text-gray-500 dark:text-gray-400">Size</div>
-                              <div className="text-sm font-medium text-gray-900 dark:text-white">{dataset.size}</div>
-                            </div>
-                            <div>
-                              <div className="text-xs text-gray-500 dark:text-gray-400">Format</div>
-                              <div className="text-sm font-medium text-gray-900 dark:text-white">{dataset.format}</div>
-                            </div>
-                            <div>
-                              <div className="text-xs text-gray-500 dark:text-gray-400">Updated</div>
-                              <div className="text-sm font-medium text-gray-900 dark:text-white">{dataset.lastUpdated}</div>
-                            </div>
-                          </div>
-                          
-                          <div className="mt-4 sm:mt-0 flex space-x-2">
-                            <Link 
-                              href={`/data/download?dataset=${dataset.id}`} 
-                              className="inline-flex items-center px-4 py-2 rounded-md bg-ocean-600 hover:bg-ocean-700 text-white transition-colors"
-                            >
-                              <ArrowDownToLine className="h-4 w-4 mr-2" />
-                              <span>Download</span>
-                            </Link>
-                            <Link 
-                              href={`/data/api?dataset=${dataset.id}`} 
-                              className="inline-flex items-center px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                            >
-                              <span>API Access</span>
-                            </Link>
-                          </div>
+            <div className="mt-8">
+              <div className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                Showing {filteredDatasets.length} datasets
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {filteredDatasets.map(dataset => (
+                  <div 
+                    key={dataset.id}
+                    className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col hover:shadow-md transition-shadow"
+                  >
+                    <div className="relative h-48 bg-gray-100 dark:bg-gray-700">
+                      <Image 
+                        src={dataset.image}
+                        alt={dataset.name}
+                        fill
+                        style={{ objectFit: 'cover' }}
+                        className="opacity-90"
+                      />
+                      <div className="absolute top-4 left-4 bg-white dark:bg-gray-800 p-2 rounded-full shadow-md">
+                        <div className="rounded-full bg-blue-100 dark:bg-blue-900 p-1">
+                          {dataset.icon}
                         </div>
                       </div>
                     </div>
+                    
+                    <div className="p-5 flex-1 flex flex-col">
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white">{dataset.name}</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 mb-4 flex-1">{dataset.description}</p>
+                      
+                      <div className="grid grid-cols-2 gap-3 text-xs text-gray-500 dark:text-gray-400 mt-2 mb-4">
+                        <div>
+                          <span className="font-medium">Region:</span> {dataset.region}
+                        </div>
+                        <div>
+                          <span className="font-medium">Time:</span> {dataset.timeframe}
+                        </div>
+                        <div>
+                          <span className="font-medium">Frequency:</span> {dataset.frequency}
+                        </div>
+                        <div>
+                          <span className="font-medium">Format:</span> {dataset.format}
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-700">
+                        <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
+                          <span>{dataset.size}</span>
+                          <span className="mx-2">•</span>
+                          <span>Updated: {dataset.lastUpdated}</span>
+                        </div>
+                        
+                        <Link 
+                          href={`/data/download?dataset=${dataset.id.split('-')[0]}`} 
+                          className="inline-flex items-center text-ocean-600 dark:text-ocean-400 text-sm font-medium"
+                        >
+                          <ArrowDownToLine className="h-3.5 w-3.5 mr-1" />
+                          <span>Download</span>
+                        </Link>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
               
               {filteredDatasets.length === 0 && (
-                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-10 text-center">
-                  <p className="text-gray-600 dark:text-gray-400">No datasets match your search criteria. Try adjusting your filters.</p>
+                <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-8 text-center">
+                  <p className="text-gray-600 dark:text-gray-400">No datasets found matching your search criteria.</p>
                 </div>
               )}
             </div>
