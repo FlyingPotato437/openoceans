@@ -25,11 +25,13 @@ const DefaultIcon = L.icon({
 L.Marker.prototype.options.icon = DefaultIcon
 
 // Define custom buoy icon
-const createBuoyIcon = (status: 'active' | 'warning' | 'offline' = 'active') => {
+const createBuoyIcon = (status: 'active' | 'warning' | 'offline' | 'maintenance' | 'inactive' = 'active') => {
   const colors = {
     active: '#10b981', // Green
     warning: '#f59e0b', // Amber
-    offline: '#ef4444'  // Red
+    offline: '#ef4444', // Red
+    maintenance: '#3b82f6', // Blue
+    inactive: '#6b7280' // Gray
   }
   
   return L.divIcon({
@@ -81,13 +83,21 @@ type Buoy = {
     lat: number
     lng: number
   }
-  status?: 'active' | 'warning' | 'offline'
-  data: {
+  status?: 'active' | 'warning' | 'offline' | 'maintenance' | 'inactive'
+  data?: {
     temperature: number
     salinity: number
     ph: number
     dissolved_oxygen: number
   }
+  sensors?: {
+    temperature: number
+    pH: number
+    salinity: number
+    turbidity: number
+    dissolved_oxygen: number
+  }
+  type: string
 }
 
 type MapProps = {
@@ -169,15 +179,20 @@ export default function Map({ buoyData = [], onBuoySelected, className }: MapPro
     
     // Clear existing markers
     Object.values(markersRef.current).forEach(marker => {
+      // Remove event listeners first
+      marker.off('click');
+      // Then remove from map
       mapRef.current?.removeLayer(marker)
     })
     markersRef.current = {}
     
     // Add new markers
     buoyData.forEach(buoy => {
+      if (!mapRef.current) return;
+      
       const icon = createBuoyIcon(buoy.status || 'active')
       const marker = L.marker([buoy.location.lat, buoy.location.lng], { icon })
-        .addTo(mapRef.current!)
+        .addTo(mapRef.current)
         .bindTooltip(`
           <div class="px-2 py-1">
             <div class="font-semibold">${buoy.name}</div>
@@ -200,6 +215,20 @@ export default function Map({ buoyData = [], onBuoySelected, className }: MapPro
     initializeMap()
     
     return () => {
+      // Clear all markers first
+      Object.values(markersRef.current).forEach(marker => {
+        // Remove event listeners first
+        marker.off('click');
+        // Then remove the marker from the map if it exists
+        if (marker && mapRef.current) {
+          marker.removeFrom(mapRef.current);
+        }
+      });
+      
+      // Then clear markersRef
+      markersRef.current = {};
+      
+      // Finally remove the map
       if (mapRef.current) {
         mapRef.current.remove()
         mapRef.current = null

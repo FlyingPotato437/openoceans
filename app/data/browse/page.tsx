@@ -327,10 +327,10 @@ export default function BrowseDataPage() {
   
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="bg-ocean-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
-        <div className="container mx-auto px-4 py-6">
+      <div className="bg-gradient-to-br from-ocean-50 to-blue-50 dark:from-gray-900 dark:to-gray-950 border-b-2 border-ocean-200 dark:border-ocean-800">
+        <div className="container mx-auto px-4 py-10">
           <div className="flex items-center mb-4">
-            <Link href="/data" className="flex items-center text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 mr-2">
+            <Link href="/data" className="flex items-center text-ocean-700 hover:text-ocean-900 dark:text-ocean-300 dark:hover:text-ocean-100 mr-2 font-medium transition-colors">
               <ArrowLeft className="h-4 w-4 mr-1" />
               <span>Back to Data</span>
             </Link>
@@ -338,32 +338,32 @@ export default function BrowseDataPage() {
           
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <h1 className="text-2xl md:text-3xl font-heading font-bold text-gray-900 dark:text-white">
+              <h1 className="text-2xl md:text-3xl font-heading font-bold text-ocean-950 dark:text-ocean-50 tracking-tight">
                 Browse Datasets
               </h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-1">
+              <p className="text-ocean-700 dark:text-ocean-300 mt-1">
                 Explore our comprehensive collection of ocean monitoring data
               </p>
             </div>
           </div>
           
-          <div className="mt-6 flex flex-col sm:flex-row gap-4">
+          <div className="mt-8 flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-400" />
+                <Search className="h-5 w-5 text-ocean-500 dark:text-ocean-400" />
               </div>
               <input
                 type="text"
                 placeholder="Search datasets..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 w-full h-10 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-ocean-500 dark:focus:ring-ocean-400"
+                className="pl-10 w-full h-12 px-4 py-2 bg-white dark:bg-gray-800 border-2 border-ocean-200 dark:border-ocean-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-ocean-500 dark:focus:ring-ocean-400 shadow-sm"
               />
             </div>
             
             <button 
               onClick={() => setFiltersVisible(!filtersVisible)}
-              className="inline-flex items-center px-4 py-2 rounded-lg bg-ocean-100 dark:bg-ocean-900 text-ocean-800 dark:text-ocean-100 hover:bg-ocean-200 dark:hover:bg-ocean-800 transition-colors"
+              className="inline-flex items-center px-5 py-3 rounded-lg bg-ocean-600 text-white hover:bg-ocean-700 dark:bg-ocean-700 dark:hover:bg-ocean-600 transition-colors shadow-md font-medium"
             >
               <Filter className="h-4 w-4 mr-2" />
               <span>Filters</span>
@@ -372,17 +372,17 @@ export default function BrowseDataPage() {
           </div>
           
           {filtersVisible && (
-            <div className="mt-4 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 animate-in slide-in-from-top duration-200">
-              <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Filter by Category</div>
+            <div className="mt-4 p-6 bg-white dark:bg-gray-800 rounded-lg border-2 border-ocean-200 dark:border-ocean-800 shadow-lg animate-in slide-in-from-top duration-200">
+              <div className="text-sm font-medium text-ocean-800 dark:text-ocean-200 mb-3">Filter by Category</div>
               <div className="flex flex-wrap gap-2">
                 {CATEGORIES.map(category => (
                   <button
                     key={category.id}
                     onClick={() => setSelectedCategory(category.id)}
-                    className={`px-3 py-1.5 rounded-full text-sm font-medium ${
-                      selectedCategory === category.id
-                        ? 'bg-ocean-600 dark:bg-ocean-500 text-white'
-                        : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                      selectedCategory === category.id 
+                        ? 'bg-ocean-600 dark:bg-ocean-500 text-white shadow-md transform scale-105'
+                        : 'bg-ocean-100 dark:bg-gray-700 text-ocean-800 dark:text-ocean-200 hover:bg-ocean-200 dark:hover:bg-gray-600'
                     }`}
                   >
                     {category.name}
@@ -394,77 +394,77 @@ export default function BrowseDataPage() {
         </div>
       </div>
       
-      <div className="flex-1 bg-white dark:bg-gray-900 py-8">
+      <div className="flex-1 bg-white dark:bg-gray-900 py-12">
         <div className="container mx-auto px-4">
-          <div className="max-w-5xl mx-auto">
-            <div className="mt-8">
-              <div className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="mt-4">
+              <div className="text-sm text-ocean-600 dark:text-ocean-400 mb-6 font-medium">
                 Showing {filteredDatasets.length} datasets
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {filteredDatasets.map(dataset => (
+            </div>
+            
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {filteredDatasets.map(dataset => (
                   <div 
                     key={dataset.id}
-                    className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col hover:shadow-md transition-shadow"
+                    className="bg-white dark:bg-gray-800 rounded-xl shadow-md border-2 border-ocean-100 dark:border-gray-700 overflow-hidden flex flex-col hover:shadow-xl hover:border-ocean-300 dark:hover:border-ocean-600 transition-all duration-200 transform hover:-translate-y-1"
                   >
-                    <div className="relative h-48 bg-gray-100 dark:bg-gray-700">
+                    <div className="relative h-48 bg-gradient-to-r from-ocean-100 to-blue-100 dark:from-ocean-900 dark:to-blue-900">
                       <Image 
                         src={dataset.image}
                         alt={dataset.name}
                         fill
                         style={{ objectFit: 'cover' }}
-                        className="opacity-90"
+                        className="mix-blend-multiply dark:mix-blend-lighten"
                       />
-                      <div className="absolute top-4 left-4 bg-white dark:bg-gray-800 p-2 rounded-full shadow-md">
-                        <div className="rounded-full bg-blue-100 dark:bg-blue-900 p-1">
-                          {dataset.icon}
+                      <div className="absolute top-4 left-4 bg-white dark:bg-gray-800 p-2 rounded-lg shadow-lg">
+                        <div className="rounded-full bg-ocean-100 dark:bg-ocean-800 p-1.5">
+                        {dataset.icon}
                         </div>
                       </div>
                     </div>
                     
-                    <div className="p-5 flex-1 flex flex-col">
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white">{dataset.name}</h3>
+                    <div className="p-6 flex-1 flex flex-col">
+                      <h3 className="text-xl font-bold text-ocean-900 dark:text-ocean-100">{dataset.name}</h3>
                       <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 mb-4 flex-1">{dataset.description}</p>
                       
-                      <div className="grid grid-cols-2 gap-3 text-xs text-gray-500 dark:text-gray-400 mt-2 mb-4">
-                        <div>
-                          <span className="font-medium">Region:</span> {dataset.region}
+                      <div className="grid grid-cols-2 gap-4 text-xs text-ocean-700 dark:text-ocean-300 mt-2 mb-4">
+                        <div className="bg-ocean-50 dark:bg-gray-700 p-2 rounded-lg">
+                          <span className="font-semibold">Region:</span> {dataset.region}
                         </div>
-                        <div>
-                          <span className="font-medium">Time:</span> {dataset.timeframe}
-                        </div>
-                        <div>
-                          <span className="font-medium">Frequency:</span> {dataset.frequency}
-                        </div>
-                        <div>
-                          <span className="font-medium">Format:</span> {dataset.format}
-                        </div>
-                      </div>
+                        <div className="bg-ocean-50 dark:bg-gray-700 p-2 rounded-lg">
+                          <span className="font-semibold">Time:</span> {dataset.timeframe}
+                          </div>
+                        <div className="bg-ocean-50 dark:bg-gray-700 p-2 rounded-lg">
+                          <span className="font-semibold">Frequency:</span> {dataset.frequency}
+                          </div>
+                        <div className="bg-ocean-50 dark:bg-gray-700 p-2 rounded-lg">
+                          <span className="font-semibold">Format:</span> {dataset.format}
+                          </div>
+                          </div>
                       
-                      <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-700">
+                      <div className="flex items-center justify-between pt-4 border-t-2 border-ocean-100 dark:border-gray-700">
                         <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
                           <span>{dataset.size}</span>
                           <span className="mx-2">•</span>
                           <span>Updated: {dataset.lastUpdated}</span>
                         </div>
                         
-                        <Link 
+                            <Link 
                           href={`/data/download?dataset=${dataset.id.split('-')[0]}`} 
-                          className="inline-flex items-center text-ocean-600 dark:text-ocean-400 text-sm font-medium"
-                        >
-                          <ArrowDownToLine className="h-3.5 w-3.5 mr-1" />
-                          <span>Download</span>
-                        </Link>
+                          className="inline-flex items-center px-4 py-2 bg-ocean-600 hover:bg-ocean-700 text-white rounded-lg shadow-sm text-sm font-medium transition-colors"
+                            >
+                          <ArrowDownToLine className="h-3.5 w-3.5 mr-2" />
+                              <span>Download</span>
+                            </Link>
                       </div>
                     </div>
                   </div>
                 ))}
-              </div>
+                </div>
               
               {filteredDatasets.length === 0 && (
-                <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-8 text-center">
-                  <p className="text-gray-600 dark:text-gray-400">No datasets found matching your search criteria.</p>
+                <div className="bg-ocean-50 dark:bg-gray-800 rounded-lg p-12 text-center border-2 border-ocean-200 dark:border-ocean-800">
+                  <p className="text-ocean-600 dark:text-ocean-300 font-medium">No datasets found matching your search criteria.</p>
                 </div>
               )}
             </div>

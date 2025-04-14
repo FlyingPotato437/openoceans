@@ -15,28 +15,25 @@ export function ThemeSwitcher() {
   }, [])
   
   if (!mounted) {
-    return <div className="w-9 h-9" />
+    return <div className="w-7 h-7" />
   }
   
   return (
     <button
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
       className={cn(
-        "relative p-2 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-ocean-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900",
+        "relative p-1.5 rounded-sharp-md transition-all duration-200 focus:outline-none",
         theme === 'dark' 
-          ? "bg-gray-700 text-yellow-300 hover:bg-gray-600" 
-          : "bg-gray-100 text-gray-900 hover:bg-gray-200"
+          ? "bg-[#2c2c2e] text-white hover:bg-[#3a3a3e]" 
+          : "bg-[#f2f2f7] text-black hover:bg-[#e5e5ea]"
       )}
       aria-label="Toggle theme"
     >
-      <Sun className={cn(
-        "h-5 w-5 transition-opacity",
-        theme === 'dark' ? "opacity-100" : "opacity-0 absolute"
-      )} />
-      <Moon className={cn(
-        "h-5 w-5 transition-opacity",
-        theme === 'dark' ? "opacity-0 absolute" : "opacity-100"
-      )} />
+      {theme === 'dark' ? (
+        <Sun className="h-4 w-4 transition-transform duration-200" />
+      ) : (
+        <Moon className="h-4 w-4 transition-transform duration-200" />
+      )}
     </button>
   )
 } 

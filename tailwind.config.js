@@ -10,8 +10,12 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ["var(--font-sans)"],
-        heading: ["var(--font-heading)"],
+        "sf-pro": ["var(--font-sf-pro)"],
+        "sf-display": ["var(--font-sf-display)"],
         mono: ["var(--font-mono)"],
+        serif: ["var(--font-serif)", "Georgia", "serif"],
+        handwritten: ["var(--font-handwritten)", "cursive"],
+        cursive: ["var(--font-cursive)", "cursive"],
       },
       colors: {
         ocean: {
@@ -58,6 +62,8 @@ module.exports = {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
         'wave-pattern': "url('/images/wave-pattern.svg')",
+        'sharp-gradient': 'linear-gradient(135deg, var(--tw-gradient-stops))',
+        'diagonal-stripes': 'repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(0,0,0,0.05) 5px, rgba(0,0,0,0.05) 10px)',
       },
       animation: {
         'float': 'float 6s ease-in-out infinite',
@@ -65,6 +71,8 @@ module.exports = {
         'shimmer': 'shimmer 2s linear infinite',
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'bounce-subtle': 'bounce-subtle 2s ease-in-out infinite',
+        'slide-in-right': 'slide-in-right 0.3s ease-out',
       },
       keyframes: {
         float: {
@@ -83,15 +91,38 @@ module.exports = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: 0 },
         },
+        'bounce-subtle': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-3px)' },
+        },
+        'slide-in-right': {
+          '0%': { transform: 'translateX(20px)', opacity: 0 },
+          '100%': { transform: 'translateX(0)', opacity: 1 },
+        },
       },
       boxShadow: {
         'soft': '0 2px 15px rgba(0, 0, 0, 0.05)',
         'soft-lg': '0 10px 25px -5px rgba(0, 0, 0, 0.08)',
+        'sharp': '0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)',
+        'sharp-md': '0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23)',
+        'sharp-lg': '0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23)',
+        'sharp-xl': '0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22)',
+        'sharp-inner': 'inset 0 1px 3px rgba(0, 0, 0, 0.12)',
+        'sharp-left': '-4px 0 0 var(--primary)',
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        'sharp': '2px',
+        'sharp-md': '4px',
+        'sharp-none': '0px',
+        'top-left': '4px 0 0 0',
+        'top-right': '0 4px 0 0',
+      },
+      borderWidth: {
+        '3': '3px',
+        '6': '6px',
       },
     },
   },

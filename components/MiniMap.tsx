@@ -25,11 +25,13 @@ const DefaultIcon = L.icon({
 L.Marker.prototype.options.icon = DefaultIcon
 
 // Define custom buoy icon
-const createBuoyIcon = (status: 'active' | 'warning' | 'offline' = 'active') => {
+const createBuoyIcon = (status: 'active' | 'warning' | 'offline' | 'maintenance' | 'inactive' = 'active') => {
   const colors = {
     active: '#10b981', // Green
     warning: '#f59e0b', // Amber
-    offline: '#ef4444'  // Red
+    offline: '#ef4444',  // Red
+    maintenance: '#3b82f6', // Blue
+    inactive: '#6b7280' // Gray
   }
   
   return L.divIcon({
@@ -79,7 +81,7 @@ type MiniMapProps = {
     lat: number
     lng: number
   }
-  status?: 'active' | 'warning' | 'offline'
+  status?: 'active' | 'warning' | 'offline' | 'maintenance' | 'inactive'
   className?: string
   height?: string
 }
@@ -100,8 +102,7 @@ export default function MiniMap({ location, status = 'active', className, height
         scrollWheelZoom: false,
         doubleClickZoom: false,
         touchZoom: false,
-        boxZoom: false,
-        tap: false
+        boxZoom: false
       })
       
       // Add ocean-styled base layer

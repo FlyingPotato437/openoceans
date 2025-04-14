@@ -4,6 +4,8 @@ import { useEffect, useRef } from 'react'
 
 export default function GlobeAnimation() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  // Add a ref to track the animation frame ID
+  const animationFrameRef = useRef<number | null>(null)
   
   useEffect(() => {
     const canvas = canvasRef.current
@@ -131,17 +133,21 @@ export default function GlobeAnimation() {
       // Update rotation for next frame
       rotation += 0.002
       
-      // Continue animation
-      requestAnimationFrame(animate)
+      // Continue animation - store the reference for cleanup
+      animationFrameRef.current = requestAnimationFrame(animate)
     }
     
     // Start animation
-    const animationId = requestAnimationFrame(animate)
+    animationFrameRef.current = requestAnimationFrame(animate)
     
     // Cleanup on unmount
     return () => {
       window.removeEventListener('resize', setCanvasDimensions)
-      cancelAnimationFrame(animationId)
+      // Cancel any pending animation frame
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current)
+        animationFrameRef.current = null
+      }
     }
   }, [])
   

@@ -254,32 +254,33 @@ export default function DownloadDataPage() {
         </div>
       </div>
       
-      <div className="flex-1 bg-white dark:bg-gray-900 py-8">
+      <div className="flex-1 bg-white dark:bg-gray-900 py-12">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
             {queryDataset && (
-              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-8 animate-in fade-in duration-200">
+              <div className="bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500 dark:border-blue-400 rounded-sm p-4 mb-8 animate-in fade-in duration-300">
                 <p className="text-blue-800 dark:text-blue-300">
                   You've been directed to download the {DATASETS.find(d => d.id === queryDataset)?.name}. Please select your preferred format below.
                 </p>
               </div>
             )}
             
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 mb-8">
-              <div className="p-6">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
-                  Step 1: Select a Dataset
+            <div className="bg-white dark:bg-gray-800 rounded-sm shadow-lg border border-gray-200 dark:border-gray-700 mb-10 overflow-hidden">
+              <div className="border-l-4 border-ocean-500 dark:border-ocean-400 p-6">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+                  <span className="inline-block w-6 h-6 rounded-sm bg-ocean-500 text-white flex items-center justify-center text-xs mr-2.5">1</span>
+                  Select a Dataset
                 </h2>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   {DATASETS.map(dataset => (
                     <div 
                       key={dataset.id}
                       onClick={() => setSelectedDataset(dataset.id)}
-                      className={`cursor-pointer rounded-lg flex flex-col overflow-hidden transition-all duration-200 ${
+                      className={`cursor-pointer rounded-sm flex flex-col overflow-hidden transition-all duration-200 ${
                         selectedDataset === dataset.id
-                          ? 'ring-2 ring-ocean-500 dark:ring-ocean-400 shadow-md'
-                          : 'border border-gray-200 dark:border-gray-700 hover:border-ocean-200 dark:hover:border-gray-600 hover:shadow-sm'
+                          ? 'ring-2 ring-ocean-500 dark:ring-ocean-400 shadow-lg translate-y-[-2px]'
+                          : 'border border-gray-200 dark:border-gray-700 hover:border-ocean-200 dark:hover:border-gray-600 hover:shadow-md hover:translate-y-[-2px]'
                       }`}
                     >
                       <div className="relative h-48 w-full bg-gray-100 dark:bg-gray-800">
@@ -293,12 +294,12 @@ export default function DownloadDataPage() {
                       </div>
                       <div className={`p-4 flex-1 ${
                         selectedDataset === dataset.id
-                          ? 'bg-ocean-50 dark:bg-ocean-900/40'
+                          ? 'bg-ocean-50 dark:bg-ocean-900/40 border-t-2 border-ocean-500 dark:border-ocean-400'
                           : 'bg-white dark:bg-gray-800'
                       }`}>
                         <div className="flex justify-between">
                           <h3 className="font-medium text-gray-900 dark:text-white">{dataset.name}</h3>
-                          <div className={`rounded-full h-5 w-5 ${
+                          <div className={`rounded-sm h-5 w-5 ${
                             selectedDataset === dataset.id
                               ? 'bg-ocean-500 dark:bg-ocean-400 text-white flex items-center justify-center'
                               : 'border-2 border-gray-300 dark:border-gray-600'
@@ -341,24 +342,25 @@ export default function DownloadDataPage() {
             </div>
             
             {selectedDataset && (
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 mb-8 animate-in slide-in-from-top duration-200">
-                <div className="p-6">
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                    Step 2: Select Format
+              <div className="bg-white dark:bg-gray-800 rounded-sm shadow-lg border border-gray-200 dark:border-gray-700 mb-10 overflow-hidden animate-in slide-in-from-top duration-300">
+                <div className="border-l-4 border-ocean-500 dark:border-ocean-400 p-6">
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+                    <span className="inline-block w-6 h-6 rounded-sm bg-ocean-500 text-white flex items-center justify-center text-xs mr-2.5">2</span>
+                    Select Format
                   </h2>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                     {dataset?.formats.map(format => (
                       <div 
                         key={format}
                         onClick={() => setSelectedFormat(format)}
-                        className={`cursor-pointer p-5 rounded-lg flex flex-col items-center transition-all duration-200 ${
+                        className={`cursor-pointer p-5 rounded-sm flex flex-col items-center transition-all duration-200 ${
                           selectedFormat === format
-                            ? 'bg-ocean-50 dark:bg-ocean-900/40 ring-2 ring-ocean-500 dark:ring-ocean-400'
-                            : 'bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-900 hover:shadow-sm'
+                            ? 'bg-ocean-50 dark:bg-ocean-900/40 ring-2 ring-ocean-500 dark:ring-ocean-400 shadow-md translate-y-[-2px]'
+                            : 'bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-900 hover:shadow-md hover:translate-y-[-2px]'
                         }`}
                       >
-                        <div className={`p-4 rounded-full ${
+                        <div className={`p-4 rounded-sm ${
                           selectedFormat === format
                             ? 'bg-ocean-100 dark:bg-ocean-900/60 text-ocean-600 dark:text-ocean-400'
                             : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
@@ -381,16 +383,17 @@ export default function DownloadDataPage() {
             )}
             
             {selectedDataset && selectedFormat && (
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 mb-8 animate-in slide-in-from-top duration-200">
-                <div className="p-6">
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                    Step 3: Download
+              <div className="bg-white dark:bg-gray-800 rounded-sm shadow-lg border border-gray-200 dark:border-gray-700 mb-10 overflow-hidden animate-in slide-in-from-top duration-300">
+                <div className="border-l-4 border-ocean-500 dark:border-ocean-400 p-6">
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+                    <span className="inline-block w-6 h-6 rounded-sm bg-ocean-500 text-white flex items-center justify-center text-xs mr-2.5">3</span>
+                    Download
                   </h2>
                   
-                  <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 mb-6">
+                  <div className="bg-gray-50 dark:bg-gray-900 rounded-sm p-6 mb-6">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                       <div className="flex items-center">
-                        <div className="relative h-14 w-14 rounded-lg overflow-hidden mr-4 hidden sm:block">
+                        <div className="relative h-14 w-14 rounded-sm overflow-hidden mr-4 hidden sm:block">
                           <Image 
                             src={dataset?.image || ''}
                             alt={dataset?.name || ''}
@@ -410,7 +413,7 @@ export default function DownloadDataPage() {
                       
                       <button
                         onClick={handleDownload}
-                        className="inline-flex items-center px-6 py-3 rounded-lg bg-ocean-600 hover:bg-ocean-700 dark:bg-ocean-600 dark:hover:bg-ocean-700 text-white font-medium transition-colors"
+                        className="inline-flex items-center px-6 py-3 rounded-sm bg-ocean-600 hover:bg-ocean-700 dark:bg-ocean-600 dark:hover:bg-ocean-700 text-white font-medium transition-colors shadow-md hover:shadow-lg"
                       >
                         <Download className="h-5 w-5 mr-2" />
                         <span>Download File</span>
@@ -427,7 +430,7 @@ export default function DownloadDataPage() {
                       You can also access this data programmatically through our API:
                     </p>
                     
-                    <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 font-mono text-sm mb-4 overflow-x-auto">
+                    <div className="bg-gray-50 dark:bg-gray-900 rounded-sm p-4 font-mono text-sm mb-4 overflow-x-auto border-l-2 border-ocean-500 dark:border-ocean-400">
                       <code>
                         GET https://api.openocean.org/v1/data/{selectedDataset}?format={selectedFormat}&api_key=YOUR_API_KEY
                       </code>
@@ -439,7 +442,7 @@ export default function DownloadDataPage() {
                           type="text" 
                           value="api_key_12345abcdef6789ghijklmnopqrstuvwxyz" 
                           readOnly
-                          className="w-full px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-ocean-500 dark:focus:ring-ocean-400 text-gray-400 dark:text-gray-500 font-mono"
+                          className="w-full px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-sm focus:outline-none focus:ring-2 focus:ring-ocean-500 dark:focus:ring-ocean-400 text-gray-400 dark:text-gray-500 font-mono"
                         />
                         <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
                           <span className="text-gray-500 dark:text-gray-400 font-mono">API Key: </span>
@@ -448,7 +451,7 @@ export default function DownloadDataPage() {
                       
                       <button
                         onClick={handleCopyAPIKey}
-                        className="inline-flex items-center px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                        className="inline-flex items-center px-4 py-2 rounded-sm border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors shadow-sm hover:shadow-md"
                       >
                         {copied ? (
                           <>
@@ -466,7 +469,7 @@ export default function DownloadDataPage() {
                     
                     <Link 
                       href="/data/api" 
-                      className="inline-flex items-center text-ocean-600 dark:text-ocean-400 hover:text-ocean-700 dark:hover:text-ocean-300 font-medium"
+                      className="inline-flex items-center text-ocean-600 dark:text-ocean-400 hover:text-ocean-700 dark:hover:text-ocean-300 font-medium transition-colors"
                     >
                       <span>View complete API documentation</span>
                       <ArrowRight className="h-4 w-4 ml-2" />
@@ -476,10 +479,10 @@ export default function DownloadDataPage() {
               </div>
             )}
             
-            <div className="bg-ocean-50 dark:bg-gray-800 rounded-xl shadow-md border border-ocean-100 dark:border-gray-700 overflow-hidden">
+            <div className="bg-ocean-50 dark:bg-gray-800 rounded-sm shadow-lg border-l-4 border-ocean-500 dark:border-ocean-400 overflow-hidden">
               <div className="p-6">
                 <div className="flex items-center mb-4">
-                  <div className="p-2 bg-ocean-100 dark:bg-ocean-900 rounded-full mr-4">
+                  <div className="p-2 bg-ocean-100 dark:bg-ocean-900 rounded-sm mr-4">
                     <ExternalLink className="h-5 w-5 text-ocean-600 dark:text-ocean-400" />
                   </div>
                   <h3 className="text-lg font-bold text-gray-900 dark:text-white">
@@ -494,7 +497,7 @@ export default function DownloadDataPage() {
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Link 
                     href="/data/browse?category=reef" 
-                    className="inline-flex items-center px-5 py-2.5 rounded-lg bg-ocean-600 hover:bg-ocean-700 text-white transition-colors"
+                    className="inline-flex items-center px-5 py-2.5 rounded-sm bg-ocean-600 hover:bg-ocean-700 text-white transition-colors shadow-md hover:shadow-lg"
                   >
                     <span>Browse REEFlect Data</span>
                   </Link>
@@ -503,7 +506,7 @@ export default function DownloadDataPage() {
                     href="https://reeflect.org/data" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="inline-flex items-center px-5 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    className="inline-flex items-center px-5 py-2.5 rounded-sm border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors shadow-sm hover:shadow-md"
                   >
                     <span>Visit REEFlect Data Portal</span>
                     <ExternalLink className="h-4 w-4 ml-2" />
