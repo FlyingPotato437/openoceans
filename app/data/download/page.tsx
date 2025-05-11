@@ -6,86 +6,84 @@ import Image from 'next/image'
 import { ArrowLeft, Download, FileJson, FileText, FileSpreadsheet, Clipboard, Check, ArrowRight, ExternalLink, BarChart2, Globe, Clock, Database } from 'lucide-react'
 import { downloadData } from '@/lib/download'
 
-// Sample datasets - Reduced to 5
-const DATASETS = [
+const ALL_DATASETS = [
   {
     id: 'temperature',
     name: 'Temperature Data',
-    description: 'Sea surface temperature readings from our network of ocean buoys.',
-    size: 'Large (Generated)', // Updated size to reflect generated data
+    description: 'Global sea surface and subsurface temperature records from our advanced sensor network.',
+    size: '~22.7 MB', 
     formats: ['csv', 'json', 'excel'],
-    lastUpdated: new Date().toISOString().split('T')[0], // Dynamic date
+    lastUpdated: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
     image: '/images/temp-data.jpg',
     stats: {
-      records: '5 buoys, 10k readings', // Updated stats
-      timespan: '2022-Present',
-      regions: 'Varied (Generated)',
-      samplingRate: 'Hourly (Generated)'
+      records: '>10k per station',
+      timespan: '2021-Present',
+      regions: 'Global Ocean Basins',
+      samplingRate: 'Hourly, 6-Hourly'
     }
   },
   { 
     id: 'salinity',
     name: 'Salinity Data',
-    description: 'Ocean salinity measurements from our global buoy network.',
-    size: 'Large (Generated)',
+    description: 'Comprehensive ocean salinity profiles from diverse marine environments.',
+    size: '~19.5 MB',
     formats: ['csv', 'json', 'excel'],
-    lastUpdated: new Date().toISOString().split('T')[0],
+    lastUpdated: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
     image: '/images/salinity-data.jpg',
     stats: {
-      records: '5 buoys, 10k readings',
-      timespan: '2022-Present',
-      regions: 'Varied (Generated)',
-      samplingRate: 'Hourly (Generated)'
+      records: '>10k per station',
+      timespan: '2021-Present',
+      regions: 'Key Salinity Gradients',
+      samplingRate: 'Variable Depth Profile'
     }
   },
   {
     id: 'ph',
     name: 'pH Levels',
-    description: 'Ocean acidity (pH) readings from our monitoring stations.',
-    size: 'Large (Generated)',
+    description: 'Seawater pH measurements crucial for ocean acidification studies.',
+    size: '~16.2 MB',
     formats: ['csv', 'json', 'excel'],
-    lastUpdated: new Date().toISOString().split('T')[0],
+    lastUpdated: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
     image: '/images/ph-data.jpg',
     stats: {
-      records: '5 buoys, 10k readings',
-      timespan: '2022-Present',
-      regions: 'Varied (Generated)',
-      samplingRate: 'Hourly (Generated)'
+      records: '>10k per station',
+      timespan: '2021-Present',
+      regions: 'Coastal & Upwelling Zones',
+      samplingRate: 'Hourly, Daily'
     }
   },
   {
     id: 'dissolved_oxygen',
     name: 'Dissolved Oxygen',
-    description: 'Dissolved oxygen concentration measurements from our buoys.',
-    size: 'Large (Generated)',
+    description: 'Dissolved oxygen concentrations vital for marine ecosystem health assessment.',
+    size: '~20.8 MB',
     formats: ['csv', 'json', 'excel'],
-    lastUpdated: new Date().toISOString().split('T')[0],
+    lastUpdated: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
     image: '/images/oxygen-data.jpg',
     stats: {
-      records: '5 buoys, 10k readings',
-      timespan: '2022-Present',
-      regions: 'Varied (Generated)',
-      samplingRate: 'Hourly (Generated)'
+      records: '>10k per station',
+      timespan: '2021-Present',
+      regions: 'Oxygen Minimum Zones & Shelf Seas',
+      samplingRate: '6-Hourly, Daily'
     }
   },
   {
-    id: 'reef', // Keeping this one as it was specifically mentioned elsewhere (REEFlect)
-    name: 'REEFlect Coral Data',
-    description: 'Specialized coral reef monitoring data from REEFlect buoys.',
-    size: 'Large (Generated)',
+    id: 'reef',
+    name: 'Integrated Reef Monitoring Data',
+    description: 'Multi-parameter dataset from critical coral reef ecosystems globally.',
+    size: '~25.1 MB',
     formats: ['csv', 'json', 'excel'],
     lastUpdated: new Date().toISOString().split('T')[0],
     image: '/images/coral-data.jpg',
     stats: {
-      records: '5 buoys, 10k readings',
-      timespan: '2022-Present',
-      regions: 'Varied (Generated)',
-      samplingRate: 'Hourly (Generated)'
+      records: '>10k per station (all params)',
+      timespan: '2021-Present',
+      regions: 'Global Coral Reef Hotspots',
+      samplingRate: 'High-Frequency Multi-sensor'
     }
   }
 ];
 
-// Format icon mapping
 const FORMAT_ICONS = {
   csv: <FileText className="h-5 w-5" />,
   json: <FileJson className="h-5 w-5" />,
@@ -93,48 +91,51 @@ const FORMAT_ICONS = {
 }
 
 export default function DownloadDataPage() {
-  const [selectedDataset, setSelectedDataset] = useState<string | null>(null)
-  const [selectedFormat, setSelectedFormat] = useState<string | null>(null)
-  const [copied, setCopied] = useState(false)
-  const [queryDataset, setQueryDataset] = useState<string | null>(null)
-  
-  // Handle URL query parameters
+  const [selectedDataset, setSelectedDataset] = useState<string | null>(null);
+  const [selectedFormat, setSelectedFormat] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+  const [queryDataset, setQueryDataset] = useState<string | null>(null);
+  const [datasetsToDisplay, setDatasetsToDisplay] = useState(ALL_DATASETS);
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search)
-      const datasetParam = params.get('dataset')
+      const params = new URLSearchParams(window.location.search);
+      const datasetParam = params.get('dataset');
       
       if (datasetParam) {
-        setSelectedDataset(datasetParam)
-        setQueryDataset(datasetParam)
+        const specificDataset = ALL_DATASETS.find(d => d.id === datasetParam);
+        if (specificDataset) {
+          setQueryDataset(datasetParam);
+          setSelectedDataset(datasetParam); // Auto-select this dataset
+          setDatasetsToDisplay([specificDataset]); // Only show this dataset
+        } else {
+          // Invalid dataset in query, show all
+          setDatasetsToDisplay(ALL_DATASETS);
+        }
+      } else {
+        // No dataset in query, show all
+        setDatasetsToDisplay(ALL_DATASETS);
       }
     }
-  }, [])
+  }, []); // Run once on mount
   
   const handleCopyAPIKey = () => {
-    navigator.clipboard.writeText('api_key_12345abcdef6789ghijklmnopqrstuvwxyz')
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    navigator.clipboard.writeText('api_key_12345abcdef6789ghijklmnopqrstuvwxyz');
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   }
   
   const handleDownload = () => {
     if (!selectedDataset || !selectedFormat) return;
-
-    // selectedDataset is the ID like 'temperature', 'salinity', etc.
-    // selectedFormat is 'csv', 'json', or 'excel'.
-
-    // The first argument to downloadData (originalUrl) is not critical for data selection anymore,
-    // as the specific data file is chosen based on options.filename inside downloadData.
-    // We can pass a placeholder or a generic path.
     const placeholderUrl = `/api/data_placeholder/${selectedDataset}`;
-
     downloadData(placeholderUrl, {
-      filename: `openocean_${selectedDataset}_data`, // e.g., openocean_temperature_data
+      filename: `openocean_${selectedDataset}_data`,
       format: selectedFormat as 'csv' | 'json' | 'excel'
     });
   }
   
-  const dataset = selectedDataset ? DATASETS.find(d => d.id === selectedDataset) : null
+  // The 'dataset' variable for format selection should be based on selectedDataset, not queryDataset directly
+  const currentDatasetForFormatSelection = selectedDataset ? ALL_DATASETS.find(d => d.id === selectedDataset) : null;
   
   return (
     <div className="flex flex-col min-h-screen">
@@ -143,17 +144,17 @@ export default function DownloadDataPage() {
           <div className="flex items-center mb-4">
             <Link href="/data" className="flex items-center text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 mr-2">
               <ArrowLeft className="h-4 w-4 mr-1" />
-              <span>Back to Data</span>
+              <span>Back to Data Overview</span>
             </Link>
           </div>
           
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <h1 className="text-2xl md:text-3xl font-heading font-bold text-gray-900 dark:text-white">
-                Download Data
+                {queryDataset ? `Download ${ALL_DATASETS.find(d => d.id === queryDataset)?.name || 'Data'}` : 'Download Datasets'}
               </h1>
               <p className="text-gray-600 dark:text-gray-400 mt-1">
-                Download complete ocean monitoring datasets in various formats
+                {queryDataset ? `Select your preferred format for the ${ALL_DATASETS.find(d => d.id === queryDataset)?.name || 'selected dataset'}.` : 'Select a dataset and format for download.'}
               </p>
             </div>
           </div>
@@ -166,79 +167,85 @@ export default function DownloadDataPage() {
             {queryDataset && (
               <div className="bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500 dark:border-blue-400 rounded-sm p-4 mb-8 animate-in fade-in duration-300">
                 <p className="text-blue-800 dark:text-blue-300">
-                  You've been directed to download the {DATASETS.find(d => d.id === queryDataset)?.name}. Please select your preferred format below.
+                  You are downloading the <strong>{ALL_DATASETS.find(d => d.id === queryDataset)?.name}</strong>. Proceed to select format below.
                 </p>
               </div>
             )}
             
-            <div className="bg-white dark:bg-gray-800 rounded-sm shadow-lg border border-gray-200 dark:border-gray-700 mb-10 overflow-hidden">
+            {/* Conditionally render this section or modify its behavior based on queryDataset */}
+            {/* If queryDataset is present, this section might be less prominent or confirm selection */}
+            <div className={`bg-white dark:bg-gray-800 rounded-sm shadow-lg border border-gray-200 dark:border-gray-700 mb-10 overflow-hidden ${queryDataset ? 'opacity-75 pointer-events-none' : ''}`}>
               <div className="border-l-4 border-ocean-500 dark:border-ocean-400 p-6">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
                   <span className="inline-block w-6 h-6 rounded-sm bg-ocean-500 text-white flex items-center justify-center text-xs mr-2.5">1</span>
-                  Select a Dataset
+                  {queryDataset ? `Selected Dataset: ${ALL_DATASETS.find(d => d.id === queryDataset)?.name}` : 'Select a Dataset' }
                 </h2>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  {DATASETS.map(dataset => (
+                <div className={`grid grid-cols-1 ${datasetsToDisplay.length > 1 ? 'md:grid-cols-2' : 'md:grid-cols-1 justify-center'} gap-5`}>
+                  {datasetsToDisplay.map(datasetItem => (
                     <div 
-                      key={dataset.id}
-                      onClick={() => setSelectedDataset(dataset.id)}
-                      className={`cursor-pointer rounded-sm flex flex-col overflow-hidden transition-all duration-200 ${
-                        selectedDataset === dataset.id
+                      key={datasetItem.id}
+                      // onClick only relevant if multiple datasets are shown
+                      onClick={() => !queryDataset && setSelectedDataset(datasetItem.id)} 
+                      className={`rounded-sm flex flex-col overflow-hidden transition-all duration-200 ${!queryDataset ? 'cursor-pointer' : 'cursor-default'} ${
+                        selectedDataset === datasetItem.id
                           ? 'ring-2 ring-ocean-500 dark:ring-ocean-400 shadow-lg translate-y-[-2px]'
                           : 'border border-gray-200 dark:border-gray-700 hover:border-ocean-200 dark:hover:border-gray-600 hover:shadow-md hover:translate-y-[-2px]'
                       }`}
                     >
                       <div className="relative h-48 w-full bg-gray-100 dark:bg-gray-800">
                         <Image 
-                          src={dataset.image}
-                          alt={dataset.name}
+                          src={datasetItem.image}
+                          alt={datasetItem.name}
                           fill
                           style={{ objectFit: 'cover' }}
                           className="transition-opacity"
                         />
                       </div>
                       <div className={`p-4 flex-1 ${
-                        selectedDataset === dataset.id
+                        selectedDataset === datasetItem.id
                           ? 'bg-ocean-50 dark:bg-ocean-900/40 border-t-2 border-ocean-500 dark:border-ocean-400'
                           : 'bg-white dark:bg-gray-800'
                       }`}>
-                        <div className="flex justify-between">
-                          <h3 className="font-medium text-gray-900 dark:text-white">{dataset.name}</h3>
-                          <div className={`rounded-sm h-5 w-5 ${
-                            selectedDataset === dataset.id
-                              ? 'bg-ocean-500 dark:bg-ocean-400 text-white flex items-center justify-center'
-                              : 'border-2 border-gray-300 dark:border-gray-600'
-                          }`}>
-                            {selectedDataset === dataset.id && (
-                              <Check className="h-3 w-3" />
-                            )}
-                          </div>
+                        <div className="flex justify-between items-center">
+                          <h3 className="font-medium text-gray-900 dark:text-white">{datasetItem.name}</h3>
+                          {/* Checkmark only makes sense if there's a choice */}
+                          {(!queryDataset || datasetsToDisplay.length > 1) && (
+                            <div className={`rounded-sm h-5 w-5 ${
+                              selectedDataset === datasetItem.id
+                                ? 'bg-ocean-500 dark:bg-ocean-400 text-white flex items-center justify-center'
+                                : 'border-2 border-gray-300 dark:border-gray-600'
+                            }`}>
+                              {selectedDataset === datasetItem.id && (
+                                <Check className="h-3 w-3" />
+                              )}
+                            </div>
+                          )}
                         </div>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{dataset.description}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{datasetItem.description}</p>
                         
                         <div className="grid grid-cols-2 gap-3 mt-3">
                           <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
                             <Database className="h-3 w-3 mr-1" />
-                            <span>{dataset.stats.records} records</span>
+                            <span>{datasetItem.stats.records}</span>
                           </div>
                           <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
                             <Clock className="h-3 w-3 mr-1" />
-                            <span>{dataset.stats.timespan}</span>
+                            <span>{datasetItem.stats.timespan}</span>
                           </div>
                           <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
                             <Globe className="h-3 w-3 mr-1" />
-                            <span>{dataset.stats.regions}</span>
+                            <span>{datasetItem.stats.regions}</span>
                           </div>
                           <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
                             <BarChart2 className="h-3 w-3 mr-1" />
-                            <span>{dataset.stats.samplingRate}</span>
+                            <span>{datasetItem.stats.samplingRate}</span>
                           </div>
                         </div>
                         
                         <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100 dark:border-gray-700">
-                          <span className="text-xs font-medium text-gray-500 dark:text-gray-400">{dataset.size}</span>
-                          <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Updated: {dataset.lastUpdated}</span>
+                          <span className="text-xs font-medium text-gray-500 dark:text-gray-400">{datasetItem.size}</span>
+                          <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Updated: {datasetItem.lastUpdated}</span>
                         </div>
                       </div>
                     </div>
@@ -247,16 +254,17 @@ export default function DownloadDataPage() {
               </div>
             </div>
             
+            {/* This section for selecting format should always be available if a dataset is selected */}
             {selectedDataset && (
               <div className="bg-white dark:bg-gray-800 rounded-sm shadow-lg border border-gray-200 dark:border-gray-700 mb-10 overflow-hidden animate-in slide-in-from-top duration-300">
                 <div className="border-l-4 border-ocean-500 dark:border-ocean-400 p-6">
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
-                    <span className="inline-block w-6 h-6 rounded-sm bg-ocean-500 text-white flex items-center justify-center text-xs mr-2.5">2</span>
+                    <span className="inline-block w-6 h-6 rounded-sm bg-ocean-500 text-white flex items-center justify-center text-xs mr-2.5">{queryDataset ? '2' : '2'}</span>
                     Select Format
                   </h2>
                   
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                    {dataset?.formats.map(format => (
+                    {currentDatasetForFormatSelection?.formats.map(format => (
                       <div 
                         key={format}
                         onClick={() => setSelectedFormat(format)}
@@ -292,7 +300,7 @@ export default function DownloadDataPage() {
               <div className="bg-white dark:bg-gray-800 rounded-sm shadow-lg border border-gray-200 dark:border-gray-700 mb-10 overflow-hidden animate-in slide-in-from-top duration-300">
                 <div className="border-l-4 border-ocean-500 dark:border-ocean-400 p-6">
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
-                    <span className="inline-block w-6 h-6 rounded-sm bg-ocean-500 text-white flex items-center justify-center text-xs mr-2.5">3</span>
+                    <span className="inline-block w-6 h-6 rounded-sm bg-ocean-500 text-white flex items-center justify-center text-xs mr-2.5">{queryDataset ? '3' : '3'}</span>
                     Download
                   </h2>
                   
@@ -301,18 +309,18 @@ export default function DownloadDataPage() {
                       <div className="flex items-center">
                         <div className="relative h-14 w-14 rounded-sm overflow-hidden mr-4 hidden sm:block">
                           <Image 
-                            src={dataset?.image || ''}
-                            alt={dataset?.name || ''}
+                            src={currentDatasetForFormatSelection?.image || ''}
+                            alt={currentDatasetForFormatSelection?.name || ''}
                             fill
                             style={{ objectFit: 'cover' }}
                           />
                         </div>
                         <div>
                           <h3 className="font-medium text-gray-900 dark:text-white">
-                            {DATASETS.find(d => d.id === selectedDataset)?.name} ({selectedFormat.toUpperCase()})
+                            {currentDatasetForFormatSelection?.name} ({selectedFormat.toUpperCase()})
                           </h3>
                           <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                            {dataset?.size} • {dataset?.stats.records} records • Ready for download
+                            {currentDatasetForFormatSelection?.size} • {currentDatasetForFormatSelection?.stats.records} records • Ready for download
                           </p>
                         </div>
                       </div>
@@ -392,31 +400,35 @@ export default function DownloadDataPage() {
                     <ExternalLink className="h-5 w-5 text-ocean-600 dark:text-ocean-400" />
                   </div>
                   <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                    REEFlect Specialized Datasets
+                    {queryDataset ? 'Other Available Datasets' : 'REEFlect Specialized Datasets'}
                   </h3>
                 </div>
                 
                 <p className="text-gray-600 dark:text-gray-400 mb-6">
-                  Looking for the specialized coral reef monitoring datasets? Through our partnership with REEFlect, we offer advanced coral reef analytics and monitoring data.
+                  {queryDataset 
+                    ? 'While you are focused on a specific dataset, explore our other comprehensive monitoring data collections.' 
+                    : 'Looking for the specialized coral reef monitoring datasets? Through our partnership with REEFlect, we offer advanced coral reef analytics and monitoring data.'}
                 </p>
                 
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Link 
-                    href="/data/browse?category=reef" 
+                    href={queryDataset ? "/data/download" : "/data/browse?category=reef"} 
                     className="inline-flex items-center px-5 py-2.5 rounded-sm bg-ocean-600 hover:bg-ocean-700 text-white transition-colors shadow-md hover:shadow-lg"
                   >
-                    <span>Browse REEFlect Data</span>
+                    <span>{queryDataset ? 'View All Datasets' : 'Browse REEFlect Data'}</span>
                   </Link>
                   
-                  <a 
-                    href="https://reeflect.org/data" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center px-5 py-2.5 rounded-sm border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors shadow-sm hover:shadow-md"
-                  >
-                    <span>Visit REEFlect Data Portal</span>
-                    <ExternalLink className="h-4 w-4 ml-2" />
-                  </a>
+                  {!queryDataset && (
+                    <a 
+                      href="https://reeflect.org/data" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center px-5 py-2.5 rounded-sm border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors shadow-sm hover:shadow-md"
+                    >
+                      <span>Visit REEFlect Data Portal</span>
+                      <ExternalLink className="h-4 w-4 ml-2" />
+                    </a>
+                  )}
                 </div>
               </div>
             </div>

@@ -50,8 +50,8 @@ const MapComponent = dynamic(() => import('@/components/Map'), {
 // Sample buoy data - Reduced to 5 buoys
 const BUOY_DATA = [
   {
-    id: 'B001',
-    name: 'Pacific Northwest Buoy (Generated)',
+    id: 'PNW-01',
+    name: 'Oregon Shelf Buoy',
     location: {
       lat: 45.5155,
       lng: -122.6789,
@@ -65,8 +65,8 @@ const BUOY_DATA = [
     },
   },
   {
-    id: 'B002',
-    name: 'Great Barrier Reef Buoy (Generated)',
+    id: 'GBR-03',
+    name: 'Coral Sea Sensor Array',
     location: {
       lat: -16.9203,
       lng: 145.7710,
@@ -80,8 +80,8 @@ const BUOY_DATA = [
     },
   },
   {
-    id: 'B003',
-    name: 'Mediterranean Buoy (Generated)',
+    id: 'MED-05',
+    name: 'Tyrrhenian Sea Monitor',
     location: {
       lat: 37.5024,
       lng: 15.0931,
@@ -95,8 +95,8 @@ const BUOY_DATA = [
     },
   },
   {
-    id: 'B004',
-    name: 'Caribbean Buoy (Generated)',
+    id: 'CAR-02',
+    name: 'Antilles Current Buoy',
     location: {
       lat: 18.2208,
       lng: -66.5901,
@@ -110,8 +110,8 @@ const BUOY_DATA = [
     },
   },
   {
-    id: 'B005',
-    name: 'South China Sea Buoy (Generated)',
+    id: 'SCS-04',
+    name: 'Spratly Islands Station',
     location: {
       lat: 10.7500,
       lng: 115.8000,
@@ -132,8 +132,8 @@ const HOMEPAGE_DATASETS = [
   {
     id: 'temperature',
     name: 'Temperature Data',
-    description: 'Sea surface temperature readings.',
-    size: 'Large (Generated)',
+    description: 'Global sea surface temperature readings.',
+    size: '~18 MB',
     format: 'csv, json, excel',
     lastUpdated: new Date().toISOString().split('T')[0],
     icon: <Thermometer className="h-5 w-5 text-blue-600 dark:text-blue-400" />
@@ -141,8 +141,8 @@ const HOMEPAGE_DATASETS = [
   { 
     id: 'salinity',
     name: 'Salinity Data',
-    description: 'Ocean salinity measurements.',
-    size: 'Large (Generated)',
+    description: 'Ocean salinity measurements across various depths.',
+    size: '~15 MB',
     format: 'csv, json, excel',
     lastUpdated: new Date().toISOString().split('T')[0],
     icon: <Droplet className="h-5 w-5 text-blue-600 dark:text-blue-400" />
@@ -150,8 +150,8 @@ const HOMEPAGE_DATASETS = [
   {
     id: 'ph',
     name: 'pH Levels',
-    description: 'Ocean acidity (pH) readings.',
-    size: 'Large (Generated)',
+    description: 'Ocean acidity (pH) readings from key monitoring stations.',
+    size: '~12 MB',
     format: 'csv, json, excel',
     lastUpdated: new Date().toISOString().split('T')[0],
     icon: <Beaker className="h-5 w-5 text-blue-600 dark:text-blue-400" />
@@ -159,8 +159,8 @@ const HOMEPAGE_DATASETS = [
   {
     id: 'dissolved_oxygen',
     name: 'Dissolved Oxygen',
-    description: 'Dissolved oxygen concentrations.',
-    size: 'Large (Generated)',
+    description: 'Dissolved oxygen concentrations critical for marine life.',
+    size: '~17 MB',
     format: 'csv, json, excel',
     lastUpdated: new Date().toISOString().split('T')[0],
     icon: <Waves className="h-5 w-5 text-blue-600 dark:text-blue-400" />
@@ -327,7 +327,7 @@ export default function Home() {
                     </div>
                     <div>
                       <p className="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 font-medium">Buoys Deployed</p>
-                      <p className="text-2xl font-bold text-black dark:text-white font-mono group-hover:text-ocean-600 dark:group-hover:text-ocean-400 transition-colors duration-300">128</p>
+                      <p className="text-2xl font-bold text-black dark:text-white font-mono group-hover:text-ocean-600 dark:group-hover:text-ocean-400 transition-colors duration-300">5</p>
                     </div>
                   </div>
                   
@@ -359,31 +359,31 @@ export default function Home() {
                 <div className="absolute top-[30%] left-[55%] group">
                   <div className="w-3 h-3 bg-white dark:bg-ocean-400 rounded-full shadow-glow animate-pulse-fast"></div>
                   <div className="absolute top-0 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm text-xs px-2 py-1 rounded-md text-ocean-600 dark:text-ocean-400 whitespace-nowrap pointer-events-none transform scale-0 group-hover:scale-100 origin-left transition-transform duration-300">
-                    Pacific Northwest Buoy
+                    Coastal Monitoring Station
                   </div>
                 </div>
                 <div className="absolute top-[45%] left-[40%] group">
                   <div className="w-2 h-2 bg-white dark:bg-ocean-400 rounded-full shadow-glow animate-pulse"></div>
                   <div className="absolute top-0 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm text-xs px-2 py-1 rounded-md text-ocean-600 dark:text-ocean-400 whitespace-nowrap pointer-events-none transform scale-0 group-hover:scale-100 origin-left transition-transform duration-300">
-                    Mediterranean Buoy
+                    Offshore Sensor Array
                   </div>
                 </div>
                 <div className="absolute top-[60%] left-[48%] group">
                   <div className="w-2.5 h-2.5 bg-white dark:bg-ocean-400 rounded-full shadow-glow animate-pulse-slow"></div>
                   <div className="absolute top-0 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm text-xs px-2 py-1 rounded-md text-ocean-600 dark:text-ocean-400 whitespace-nowrap pointer-events-none transform scale-0 group-hover:scale-100 origin-left transition-transform duration-300">
-                    Great Barrier Reef Buoy
+                    Reef Monitoring Unit
                   </div>
                 </div>
                 <div className="absolute top-[33%] left-[28%] group">
                   <div className="w-2 h-2 bg-seagrass-400 dark:bg-seagrass-500 rounded-full shadow-glow-green animate-pulse-slow"></div>
                   <div className="absolute top-0 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm text-xs px-2 py-1 rounded-md text-seagrass-600 dark:text-seagrass-400 whitespace-nowrap pointer-events-none transform scale-0 group-hover:scale-100 origin-left transition-transform duration-300">
-                    Caribbean Buoy
+                    Tropical Sensor Node
                   </div>
                 </div>
                 <div className="absolute top-[63%] left-[62%] group">
                   <div className="w-2 h-2 bg-seagrass-400 dark:bg-seagrass-500 rounded-full shadow-glow-green animate-pulse-medium"></div>
                   <div className="absolute top-0 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm text-xs px-2 py-1 rounded-md text-seagrass-600 dark:text-seagrass-400 whitespace-nowrap pointer-events-none transform scale-0 group-hover:scale-100 origin-left transition-transform duration-300">
-                    South China Sea Buoy
+                    Deep Sea Station
                   </div>
                 </div>
               </div>

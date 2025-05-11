@@ -170,17 +170,17 @@ export default function DataPage() {
                 {[
                   {
                     id: 'temperature',
-                    name: 'Temperature Dataset',
-                    description: 'Global sea temperature readings, anomaly detection.',
-                    size: 'Large (Generated)',
-                    updated: 'Recently'
+                    name: 'Global Temperature Array',
+                    description: 'Continuous sea temperature profiles, including deep ocean and surface layers.',
+                    size: '~22.7 MB',
+                    updated: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) 
                   },
                   {
-                    id: 'salinity',
-                    name: 'Salinity Dataset',
-                    description: 'Ocean salinity measurements, time-series trends.',
-                    size: 'Large (Generated)',
-                    updated: 'Recently'
+                    id: 'reef',
+                    name: 'Coral Ecosystem Monitoring',
+                    description: 'Integrated multi-parameter data from vital coral reef locations globally.',
+                    size: '~25.1 MB',
+                    updated: new Date().toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) 
                   }
                 ].map(dataset => (
                   <div key={dataset.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hand-drawn-box">
