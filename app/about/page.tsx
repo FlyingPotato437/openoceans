@@ -174,15 +174,15 @@ export default function AboutPage() {
             </div>
             
             <h2 className="text-3xl md:text-4xl font-serif italic font-bold text-gray-900 dark:text-white mb-6 bg-clip-text text-transparent bg-gradient-to-r from-ocean-600 to-ocean-800 dark:from-ocean-400 dark:to-ocean-300 brush-bg">
-              Meet the Ocean Experts
+              Meet the Ocean Expert
             </h2>
             
             <p className="text-xl text-gray-600 dark:text-gray-400 mb-10 font-handwritten leading-relaxed">
-              OpenOcean brings together leading marine scientists, engineers, conservationists, and data specialists united by a passion for ocean health and conservation.
+              OpenOcean is led by a passionate individual dedicated to ocean health and conservation, bringing together expertise in marine science, engineering, and data analysis. We are always looking to expand our team with like-minded experts.
             </p>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12">
-              <div className="bg-white dark:bg-gray-900 rounded overflow-hidden transition-all duration-300 hover:shadow-glow-sm hover:-translate-y-1 border border-ocean-200 dark:border-ocean-800/50 shadow-lg">
+            <div className="grid grid-cols-1 gap-6 mb-12 justify-items-center">
+              <div className="bg-white dark:bg-gray-900 rounded overflow-hidden transition-all duration-300 hover:shadow-glow-sm hover:-translate-y-1 border border-ocean-200 dark:border-ocean-800/50 shadow-lg max-w-md">
                 <div className="p-6">
                   <div className="flex items-center mb-4">
                     <div className="relative w-16 h-16 rounded-full overflow-hidden mr-4 bg-ocean-100 dark:bg-ocean-900/40 flex items-center justify-center border-2 border-ocean-300 dark:border-ocean-700">
@@ -200,38 +200,11 @@ export default function AboutPage() {
                     </div>
                     <div>
                       <h3 className="text-lg font-bold text-gray-900 dark:text-white">Srikanth Samy</h3>
-                      <p className="text-ocean-600 dark:text-ocean-400 font-medium">Co-Founder & CEO</p>
+                      <p className="text-ocean-600 dark:text-ocean-400 font-medium">Head, Founder & CEO</p>
                     </div>
                   </div>
                   <p className="text-gray-600 dark:text-gray-400 text-sm font-handwritten leading-relaxed">
                     Dublin High School student and tech enthusiast passionate about ocean conservation. Co-founded REEFlect to develop advanced smart buoys for coral reef monitoring.
-                  </p>
-                </div>
-              </div>
-              
-              <div className="bg-white dark:bg-gray-900 rounded overflow-hidden transition-all duration-300 hover:shadow-glow-sm hover:-translate-y-1 border border-ocean-200 dark:border-ocean-800/50 shadow-lg">
-                <div className="p-6">
-                  <div className="flex items-center mb-4">
-                    <div className="relative w-16 h-16 rounded-full overflow-hidden mr-4 bg-ocean-100 dark:bg-ocean-900/40 flex items-center justify-center border-2 border-ocean-300 dark:border-ocean-700">
-                      {!imageErrors['krishiv'] ? (
-                        <Image 
-                          src="https://source.unsplash.com/random/200x200?portrait,professional,young" 
-                          alt="Krishiv Jaini"
-                          fill
-                          style={{ objectFit: 'cover' }}
-                          onError={() => handleImageError('krishiv')}
-                        />
-                      ) : (
-                        <User className="w-8 h-8 text-ocean-500 dark:text-ocean-400" />
-                      )}
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white">Krishiv Jaini</h3>
-                      <p className="text-ocean-600 dark:text-ocean-400 font-medium">Co-Founder & CTO</p>
-                    </div>
-                  </div>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm font-handwritten leading-relaxed">
-                    Dublin High School student with expertise in software development and sensor technology. Co-founded REEFlect with a mission to protect marine ecosystems.
                   </p>
                 </div>
               </div>

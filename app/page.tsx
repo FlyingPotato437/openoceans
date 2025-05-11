@@ -47,11 +47,11 @@ const MapComponent = dynamic(() => import('@/components/Map'), {
   ),
 })
 
-// Sample buoy data
+// Sample buoy data - Reduced to 5 buoys
 const BUOY_DATA = [
   {
     id: 'B001',
-    name: 'Pacific Northwest Buoy',
+    name: 'Pacific Northwest Buoy (Generated)',
     location: {
       lat: 45.5155,
       lng: -122.6789,
@@ -66,7 +66,7 @@ const BUOY_DATA = [
   },
   {
     id: 'B002',
-    name: 'Great Barrier Reef Buoy',
+    name: 'Great Barrier Reef Buoy (Generated)',
     location: {
       lat: -16.9203,
       lng: 145.7710,
@@ -81,7 +81,7 @@ const BUOY_DATA = [
   },
   {
     id: 'B003',
-    name: 'Mediterranean Buoy',
+    name: 'Mediterranean Buoy (Generated)',
     location: {
       lat: 37.5024,
       lng: 15.0931,
@@ -96,7 +96,7 @@ const BUOY_DATA = [
   },
   {
     id: 'B004',
-    name: 'Caribbean Buoy',
+    name: 'Caribbean Buoy (Generated)',
     location: {
       lat: 18.2208,
       lng: -66.5901,
@@ -111,7 +111,7 @@ const BUOY_DATA = [
   },
   {
     id: 'B005',
-    name: 'South China Sea Buoy',
+    name: 'South China Sea Buoy (Generated)',
     location: {
       lat: 10.7500,
       lng: 115.8000,
@@ -123,70 +123,47 @@ const BUOY_DATA = [
       ph: 8.0,
       dissolved_oxygen: 6.3,
     },
-  },
-  {
-    id: 'B006',
-    name: 'Red Sea Buoy',
-    location: {
-      lat: 27.9654,
-      lng: 34.5733,
-    },
-    type: 'oceanographic',
-    data: {
-      temperature: 26.5,
-      salinity: 40.1,
-      ph: 8.2,
-      dissolved_oxygen: 6.0,
-    },
-  },
+  }
 ]
 
-// Updated DATASETS with remaining entries
-const DATASETS = [
+// DATASETS constant already defined, matching the 5 datasets from app/data/download/page.tsx
+// For the homepage, we will use the first 4 of these for the CardCarousel for a balanced look.
+const HOMEPAGE_DATASETS = [
   {
     id: 'temperature',
     name: 'Temperature Data',
-    description: 'Sea surface temperature readings from our network of ocean buoys.',
-    size: '24.5 MB',
+    description: 'Sea surface temperature readings.',
+    size: 'Large (Generated)',
     format: 'csv, json, excel',
-    lastUpdated: '2023-11-28',
+    lastUpdated: new Date().toISOString().split('T')[0],
     icon: <Thermometer className="h-5 w-5 text-blue-600 dark:text-blue-400" />
   },
   { 
     id: 'salinity',
     name: 'Salinity Data',
-    description: 'Ocean salinity measurements from our global buoy network.',
-    size: '18.7 MB',
+    description: 'Ocean salinity measurements.',
+    size: 'Large (Generated)',
     format: 'csv, json, excel',
-    lastUpdated: '2023-11-28',
+    lastUpdated: new Date().toISOString().split('T')[0],
     icon: <Droplet className="h-5 w-5 text-blue-600 dark:text-blue-400" />
   },
   {
     id: 'ph',
     name: 'pH Levels',
-    description: 'Ocean acidity (pH) readings from our monitoring stations.',
-    size: '15.3 MB',
+    description: 'Ocean acidity (pH) readings.',
+    size: 'Large (Generated)',
     format: 'csv, json, excel',
-    lastUpdated: '2023-11-27',
+    lastUpdated: new Date().toISOString().split('T')[0],
     icon: <Beaker className="h-5 w-5 text-blue-600 dark:text-blue-400" />
   },
   {
     id: 'dissolved_oxygen',
     name: 'Dissolved Oxygen',
-    description: 'Dissolved oxygen concentration measurements from our buoys.',
-    size: '22.1 MB',
+    description: 'Dissolved oxygen concentrations.',
+    size: 'Large (Generated)',
     format: 'csv, json, excel',
-    lastUpdated: '2023-11-27',
+    lastUpdated: new Date().toISOString().split('T')[0],
     icon: <Waves className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-  },
-  {
-    id: 'complete',
-    name: 'Complete Dataset',
-    description: 'Full dataset including all parameters from our ocean monitoring network.',
-    size: '78.6 MB',
-    format: 'csv, json, excel',
-    lastUpdated: '2023-11-28',
-    icon: <Database className="h-5 w-5 text-blue-600 dark:text-blue-400" />
   }
 ]
 
@@ -592,20 +569,24 @@ export default function Home() {
             </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {DATASETS.map((dataset, index) => (
-              <div key={dataset.id} className={`bg-white/90 dark:bg-gray-800/90 rounded-xl hover:shadow-lg transition-shadow duration-300 overflow-hidden backdrop-blur-sm border border-gray-200 dark:border-gray-700 ${index % 3 === 0 ? 'hand-drawn-box' : index % 3 === 1 ? 'blob-shape' : ''}`}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {HOMEPAGE_DATASETS.map((dataset) => (
+              <div 
+                key={dataset.id}
+                className="bg-white/90 dark:bg-gray-800/90 rounded-xl hover:shadow-lg transition-shadow duration-300 overflow-hidden backdrop-blur-sm border border-gray-200 dark:border-gray-700"
+              >
                 <div className="p-6">
                   <div className="flex items-center mb-4">
                     <div className="w-10 h-10 rounded-full bg-ocean-100 dark:bg-ocean-900/40 flex items-center justify-center mr-3 shadow-inner">
                       {dataset.icon}
                     </div>
-                    <h3 className="text-xl font-bold">{dataset.name}</h3>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{dataset.name}</h3>
                   </div>
-                  <p className="text-gray-600 dark:text-gray-300 mb-4">{dataset.description}</p>
-                  <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mb-6 font-mono">
-                    <span>{dataset.size}</span>
-                    <span>Last updated: {dataset.lastUpdated}</span>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 flex-grow">{dataset.description}</p>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-4">
+                    <p>Size: {dataset.size}</p>
+                    <p>Formats: {dataset.format.toUpperCase()}</p>
+                    <p>Updated: {dataset.lastUpdated}</p>
                   </div>
                   <button 
                     onClick={() => handleDownload(dataset.id)}

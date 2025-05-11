@@ -6,7 +6,7 @@ import Papa from 'papaparse'
 import * as XLSX from 'xlsx'
 
 type DownloadOptions = {
-  filename: string
+  filename: string // e.g., openocean_temperature_data or reeflect_ph_data
   format: 'csv' | 'json' | 'excel'
 }
 
@@ -55,11 +55,37 @@ function flattenData(data: any[]): any[] {
 /**
  * Download data in the specified format
  */
-export async function downloadData(url: string, options: DownloadOptions): Promise<void> {
+export async function downloadData(originalUrl: string, options: DownloadOptions): Promise<void> {
   try {
-    // Fetch data from the URL
-    const response = await fetch(url)
-    const jsonData = await response.json()
+    let datasetId = 'reef'; // Default to 'reef' (mixed data) as a fallback
+    const knownDatasetIds = ['temperature', 'salinity', 'ph', 'dissolved_oxygen', 'reef'];
+
+    // Extract datasetId from options.filename (e.g., "openocean_temperature_data" -> "temperature")
+    const filenameParts = options.filename.split('_');
+    if (filenameParts.length > 1) {
+      const potentialIdFromFilename = filenameParts[1]; // e.g., 'temperature' from 'openocean_temperature_data' or 'reeflect_temperature_data'
+      if (knownDatasetIds.includes(potentialIdFromFilename)) {
+        datasetId = potentialIdFromFilename;
+      }
+    }
+
+    const dataUrlToFetch = `/data/large_${datasetId}_data.json`;
+    console.log(`Attempting to fetch context-specific data: ${dataUrlToFetch} for filename ${options.filename}`);
+
+    let jsonData;
+    const response = await fetch(dataUrlToFetch);
+
+    if (!response.ok) {
+      console.warn(`Failed to fetch ${dataUrlToFetch} (status: ${response.status}). Falling back to large_reef_data.json (mixed).`);
+      const fallbackResponse = await fetch('/data/large_reef_data.json');
+      if (!fallbackResponse.ok) {
+        console.error(`Fallback data /data/large_reef_data.json also not found (status: ${fallbackResponse.status}).`);
+        throw new Error('Specific and fallback datasets could not be loaded.');
+      }
+      jsonData = await fallbackResponse.json();
+    } else {
+      jsonData = await response.json();
+    }
     
     // Extract the relevant data array (assuming it's in a standard format)
     const dataArray = Array.isArray(jsonData) ? jsonData : 

@@ -4,190 +4,86 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft, Download, FileJson, FileText, FileSpreadsheet, Clipboard, Check, ArrowRight, ExternalLink, BarChart2, Globe, Clock, Database } from 'lucide-react'
+import { downloadData } from '@/lib/download'
 
-// Sample datasets
+// Sample datasets - Reduced to 5
 const DATASETS = [
   {
     id: 'temperature',
     name: 'Temperature Data',
     description: 'Sea surface temperature readings from our network of ocean buoys.',
-    size: '24.5 MB',
+    size: 'Large (Generated)', // Updated size to reflect generated data
     formats: ['csv', 'json', 'excel'],
-    lastUpdated: '2023-11-28',
+    lastUpdated: new Date().toISOString().split('T')[0], // Dynamic date
     image: '/images/temp-data.jpg',
     stats: {
-      records: '1.2M',
-      timespan: '2018-2023',
-      regions: 'Global',
-      samplingRate: 'Hourly'
+      records: '5 buoys, 10k readings', // Updated stats
+      timespan: '2022-Present',
+      regions: 'Varied (Generated)',
+      samplingRate: 'Hourly (Generated)'
     }
   },
   { 
     id: 'salinity',
     name: 'Salinity Data',
     description: 'Ocean salinity measurements from our global buoy network.',
-    size: '18.7 MB',
+    size: 'Large (Generated)',
     formats: ['csv', 'json', 'excel'],
-    lastUpdated: '2023-11-28',
+    lastUpdated: new Date().toISOString().split('T')[0],
     image: '/images/salinity-data.jpg',
     stats: {
-      records: '950K',
-      timespan: '2019-2023',
-      regions: 'Atlantic, Pacific',
-      samplingRate: 'Daily'
+      records: '5 buoys, 10k readings',
+      timespan: '2022-Present',
+      regions: 'Varied (Generated)',
+      samplingRate: 'Hourly (Generated)'
     }
   },
   {
     id: 'ph',
     name: 'pH Levels',
     description: 'Ocean acidity (pH) readings from our monitoring stations.',
-    size: '15.3 MB',
+    size: 'Large (Generated)',
     formats: ['csv', 'json', 'excel'],
-    lastUpdated: '2023-11-27',
+    lastUpdated: new Date().toISOString().split('T')[0],
     image: '/images/ph-data.jpg',
     stats: {
-      records: '820K',
-      timespan: '2020-2023',
-      regions: 'Coastal regions',
-      samplingRate: '6 hours'
+      records: '5 buoys, 10k readings',
+      timespan: '2022-Present',
+      regions: 'Varied (Generated)',
+      samplingRate: 'Hourly (Generated)'
     }
   },
   {
     id: 'dissolved_oxygen',
     name: 'Dissolved Oxygen',
     description: 'Dissolved oxygen concentration measurements from our buoys.',
-    size: '22.1 MB',
+    size: 'Large (Generated)',
     formats: ['csv', 'json', 'excel'],
-    lastUpdated: '2023-11-27',
+    lastUpdated: new Date().toISOString().split('T')[0],
     image: '/images/oxygen-data.jpg',
     stats: {
-      records: '1.1M',
-      timespan: '2019-2023',
-      regions: 'Global',
-      samplingRate: 'Daily'
+      records: '5 buoys, 10k readings',
+      timespan: '2022-Present',
+      regions: 'Varied (Generated)',
+      samplingRate: 'Hourly (Generated)'
     }
   },
   {
-    id: 'reef',
+    id: 'reef', // Keeping this one as it was specifically mentioned elsewhere (REEFlect)
     name: 'REEFlect Coral Data',
     description: 'Specialized coral reef monitoring data from REEFlect buoys.',
-    size: '12.8 MB',
+    size: 'Large (Generated)',
     formats: ['csv', 'json', 'excel'],
-    lastUpdated: '2023-11-26',
+    lastUpdated: new Date().toISOString().split('T')[0],
     image: '/images/coral-data.jpg',
     stats: {
-      records: '650K',
-      timespan: '2020-2023',
-      regions: 'Great Barrier Reef, Caribbean',
-      samplingRate: 'Hourly'
-    }
-  },
-  {
-    id: 'complete',
-    name: 'Complete Dataset',
-    description: 'Full dataset including all parameters from our ocean monitoring network.',
-    size: '78.6 MB',
-    formats: ['csv', 'json', 'excel'],
-    lastUpdated: '2023-11-28',
-    image: '/images/complete-data.jpg',
-    stats: {
-      records: '3.5M',
-      timespan: '2018-2023',
-      regions: 'Global',
-      samplingRate: 'Varied'
-    }
-  },
-  {
-    id: 'currents',
-    name: 'Ocean Currents',
-    description: 'Surface and deep-water current velocity and direction measurements.',
-    size: '31.2 MB',
-    formats: ['csv', 'json', 'excel'],
-    lastUpdated: '2023-11-25',
-    image: '/images/currents-data.jpg',
-    stats: {
-      records: '1.5M',
-      timespan: '2019-2023',
-      regions: 'Major ocean currents',
-      samplingRate: '12 hours'
-    }
-  },
-  {
-    id: 'biodiversity',
-    name: 'Marine Biodiversity Index',
-    description: 'Species diversity and abundance data from monitoring stations.',
-    size: '19.8 MB',
-    formats: ['csv', 'json', 'excel'],
-    lastUpdated: '2023-11-24',
-    image: '/images/biodiversity-data.jpg',
-    stats: {
-      records: '450K',
-      timespan: '2021-2023',
-      regions: 'Biodiversity hotspots',
-      samplingRate: 'Monthly'
-    }
-  },
-  {
-    id: 'turbidity',
-    name: 'Water Turbidity',
-    description: 'Water clarity and particle suspension measurements from coastal stations.',
-    size: '16.4 MB',
-    formats: ['csv', 'json', 'excel'],
-    lastUpdated: '2023-11-23',
-    image: '/images/turbidity-data.jpg',
-    stats: {
-      records: '780K',
-      timespan: '2020-2023',
-      regions: 'Coastal, river deltas',
-      samplingRate: 'Daily'
-    }
-  },
-  {
-    id: 'chlorophyll',
-    name: 'Chlorophyll Concentrations',
-    description: 'Phytoplankton activity indicators measured via chlorophyll concentrations.',
-    size: '21.7 MB',
-    formats: ['csv', 'json', 'excel'],
-    lastUpdated: '2023-11-22',
-    image: '/images/chlorophyll-data.jpg',
-    stats: {
-      records: '920K',
-      timespan: '2020-2023',
-      regions: 'Global',
-      samplingRate: '3 days'
-    }
-  },
-  {
-    id: 'wave_height',
-    name: 'Wave Height & Frequency',
-    description: 'Wave dynamics data including height, frequency, and direction.',
-    size: '25.9 MB',
-    formats: ['csv', 'json', 'excel'],
-    lastUpdated: '2023-11-21',
-    image: '/images/wave-data.jpg',
-    stats: {
-      records: '1.3M',
-      timespan: '2019-2023',
-      regions: 'Open ocean',
-      samplingRate: 'Hourly'
-    }
-  },
-  {
-    id: 'microplastics',
-    name: 'Microplastics Concentration',
-    description: 'Measurements of microplastic particles in water samples from our sensor network.',
-    size: '14.3 MB',
-    formats: ['csv', 'json', 'excel'],
-    lastUpdated: '2023-11-20',
-    image: '/images/microplastics-data.jpg',
-    stats: {
-      records: '320K',
-      timespan: '2021-2023',
-      regions: 'Pacific gyres, coastal regions',
-      samplingRate: 'Weekly'
+      records: '5 buoys, 10k readings',
+      timespan: '2022-Present',
+      regions: 'Varied (Generated)',
+      samplingRate: 'Hourly (Generated)'
     }
   }
-]
+];
 
 // Format icon mapping
 const FORMAT_ICONS = {
@@ -222,10 +118,20 @@ export default function DownloadDataPage() {
   }
   
   const handleDownload = () => {
-    if (!selectedDataset || !selectedFormat) return
-    
-    // In a real app, this would trigger an actual download
-    alert(`Downloading ${selectedDataset} in ${selectedFormat} format. This would be a real download in a production environment.`)
+    if (!selectedDataset || !selectedFormat) return;
+
+    // selectedDataset is the ID like 'temperature', 'salinity', etc.
+    // selectedFormat is 'csv', 'json', or 'excel'.
+
+    // The first argument to downloadData (originalUrl) is not critical for data selection anymore,
+    // as the specific data file is chosen based on options.filename inside downloadData.
+    // We can pass a placeholder or a generic path.
+    const placeholderUrl = `/api/data_placeholder/${selectedDataset}`;
+
+    downloadData(placeholderUrl, {
+      filename: `openocean_${selectedDataset}_data`, // e.g., openocean_temperature_data
+      format: selectedFormat as 'csv' | 'json' | 'excel'
+    });
   }
   
   const dataset = selectedDataset ? DATASETS.find(d => d.id === selectedDataset) : null

@@ -166,66 +166,43 @@ export default function DataPage() {
                 Latest Data Updates
               </h2>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hand-drawn-box">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="rounded-full bg-blue-100 dark:bg-blue-900 p-2 doodle-border">
-                      <span role="img" aria-label="Chart" className="text-blue-600 dark:text-blue-400">📊</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {[
+                  {
+                    id: 'temperature',
+                    name: 'Temperature Dataset',
+                    description: 'Global sea temperature readings, anomaly detection.',
+                    size: 'Large (Generated)',
+                    updated: 'Recently'
+                  },
+                  {
+                    id: 'salinity',
+                    name: 'Salinity Dataset',
+                    description: 'Ocean salinity measurements, time-series trends.',
+                    size: 'Large (Generated)',
+                    updated: 'Recently'
+                  }
+                ].map(dataset => (
+                  <div key={dataset.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hand-drawn-box">
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="rounded-full bg-blue-100 dark:bg-blue-900 p-2 doodle-border">
+                        <span role="img" aria-label="Chart" className="text-blue-600 dark:text-blue-400">📊</span>
+                      </div>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">Updated {dataset.updated}</span>
                     </div>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">Updated 2 days ago</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 font-serif">Temperature Dataset</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                    Global sea temperature readings from our network of buoys, including anomaly detection.
-                  </p>
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-gray-500 dark:text-gray-400">24.5 MB</span>
-                    <Link href="/data/download?dataset=temperature" className="text-ocean-600 dark:text-ocean-400 inline-flex items-center text-sm font-medium blob-shape-alt px-2 py-1">
-                      <span role="img" aria-label="Download" className="mr-1">⬇️</span>
-                      <span>Download</span>
-                    </Link>
-                  </div>
-                </div>
-                
-                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hand-drawn-box">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="rounded-full bg-blue-100 dark:bg-blue-900 p-2 doodle-border">
-                      <span role="img" aria-label="Chart" className="text-blue-600 dark:text-blue-400">📊</span>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 font-serif">{dataset.name}</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                      {dataset.description}
+                    </p>
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs text-gray-500 dark:text-gray-400">{dataset.size}</span>
+                      <Link href={`/data/download?dataset=${dataset.id}`} className="text-ocean-600 dark:text-ocean-400 inline-flex items-center text-sm font-medium blob-shape-alt px-2 py-1">
+                        <ArrowDownToLine className="w-3 h-3 mr-1" />
+                        <span>Download</span>
+                      </Link>
                     </div>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">Updated 2 days ago</span>
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 font-serif">pH Levels Dataset</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                    Ocean acidity (pH) readings from monitoring stations, with time-series trends.
-                  </p>
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-gray-500 dark:text-gray-400">15.3 MB</span>
-                    <Link href="/data/download?dataset=ph" className="text-ocean-600 dark:text-ocean-400 inline-flex items-center text-sm font-medium blob-shape-alt px-2 py-1">
-                      <span role="img" aria-label="Download" className="mr-1">⬇️</span>
-                      <span>Download</span>
-                    </Link>
-                  </div>
-                </div>
-                
-                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hand-drawn-box">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="rounded-full bg-blue-100 dark:bg-blue-900 p-2 doodle-border">
-                      <span role="img" aria-label="Coral" className="text-blue-600 dark:text-blue-400">🪸</span>
-                    </div>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">Updated 3 days ago</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 font-serif">REEFlect Coral Dataset</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                    Specialized coral reef monitoring data from REEFlect sensors with bleaching risk analysis.
-                  </p>
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-gray-500 dark:text-gray-400">18.7 MB</span>
-                    <Link href="/data/download?dataset=reef" className="text-ocean-600 dark:text-ocean-400 inline-flex items-center text-sm font-medium blob-shape-alt px-2 py-1">
-                      <span role="img" aria-label="Download" className="mr-1">⬇️</span>
-                      <span>Download</span>
-                    </Link>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>

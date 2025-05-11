@@ -102,7 +102,6 @@ export default function RootLayout({
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
-          suppressHydrationWarning
         >
           <AuthProvider>
             <div className="flex flex-col min-h-screen mx-auto">
