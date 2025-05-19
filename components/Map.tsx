@@ -5,6 +5,7 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { ArrowUpRight, Layers, ZoomIn, ZoomOut, Crosshair, Info } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { Buoy, BuoyStatus, BuoyDataMetrics } from '../lib/types';
 
 // Import custom marker icons
 import markerIcon from 'leaflet/dist/images/marker-icon.png'
@@ -36,75 +37,60 @@ const createBuoyIcon = (status: 'active' | 'warning' | 'offline' | 'maintenance'
   
   return L.divIcon({
     className: 'custom-buoy-marker',
-    html: `
-      <div style="position: relative; display: flex; justify-content: center; align-items: center;">
-        <div style="
-          width: 14px;
-          height: 14px;
-          background-color: ${colors[status]};
-          border-radius: 50%;
-          border: 2px solid white;
-          box-shadow: 0 1px 5px rgba(0,0,0,0.2);
-        "></div>
-        <div style="
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          width: 30px;
-          height: 30px;
-          border-radius: 50%;
-          background-color: ${colors[status]}33;
-          animation: pulse 2s infinite;
-        "></div>
-      </div>
-      <style>
-        @keyframes pulse {
-          0% {
-            transform: translate(-50%, -50%) scale(0.5);
-            opacity: 1;
-          }
-          100% {
-            transform: translate(-50%, -50%) scale(1.5);
-            opacity: 0;
-          }
-        }
-      </style>
-    `,
+    html: `<div style="position: relative; display: flex; justify-content: center; align-items: center;"><div style="width: 14px; height: 14px; background-color: ${colors[status]}; border-radius: 50%; border: 2px solid white; box-shadow: 0 1px 5px rgba(0,0,0,0.2);"></div><div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 30px; height: 30px; border-radius: 50%; background-color: ${colors[status]}33; animation: pulse 2s infinite;"></div></div><style>@keyframes pulse { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; } }</style>`,
     iconSize: [20, 20],
     iconAnchor: [10, 10]
   })
 }
 
-type Buoy = {
-  id: string
-  name: string
-  location: {
-    lat: number
-    lng: number
-  }
-  status?: 'active' | 'warning' | 'offline' | 'maintenance' | 'inactive'
-  data?: {
-    temperature: number
-    salinity: number
-    ph: number
-    dissolved_oxygen: number
-  }
-  sensors?: {
-    temperature: number
-    pH: number
-    salinity: number
-    turbidity: number
-    dissolved_oxygen: number
-  }
-  type: string
+interface SimplifiedBuoyDataForMap {
+  id: string;
+  name: string;
+  location: { lat: number; lng: number };
+  status: BuoyStatus | string; // e.g., 'Online', 'Warning', or 'N/A'
+  waterTemp?: number;
+  waveHeight?: number;
+  salinity?: number;
+  // This specific status is for the visual icon, separate from display status string
+  iconStatus: 'active' | 'warning' | 'offline' | 'maintenance' | 'inactive'; 
 }
 
 type MapProps = {
-  buoyData?: Buoy[]
-  onBuoySelected?: (buoy: Buoy) => void
-  className?: string
-}
+  buoyData?: SimplifiedBuoyDataForMap[];
+  onBuoySelected?: (buoy: SimplifiedBuoyDataForMap) => void;
+  className?: string;
+};
+
+// Helper function to create popup content as an HTMLElement
+const createPopupContent = (buoy: SimplifiedBuoyDataForMap, onBuoySelected?: (buoy: SimplifiedBuoyDataForMap) => void): HTMLElement => {
+  const container = L.DomUtil.create('div', 'p-2 min-w-[200px]');
+
+  const nameEl = L.DomUtil.create('h3', 'font-semibold text-md mb-1', container);
+  nameEl.innerText = buoy.name;
+
+  const idEl = L.DomUtil.create('p', 'text-xs text-gray-500 mb-2', container);
+  idEl.innerText = 'ID: ' + buoy.id;
+
+  const detailsContainer = L.DomUtil.create('div', 'text-sm space-y-1', container);
+  const statusEl = L.DomUtil.create('p', '', detailsContainer);
+  statusEl.innerHTML = '<strong>Status:</strong> ' + (buoy.status || 'N/A');
+  
+  const tempEl = L.DomUtil.create('p', '', detailsContainer);
+  tempEl.innerHTML = '<strong>Temp:</strong> ' + (buoy.waterTemp?.toFixed(1) ?? 'N/A') + ' °C';
+
+  const waveEl = L.DomUtil.create('p', '', detailsContainer);
+  waveEl.innerHTML = '<strong>Wave Ht:</strong> ' + (buoy.waveHeight?.toFixed(2) ?? 'N/A') + ' m';
+
+  const salinityEl = L.DomUtil.create('p', '', detailsContainer);
+  salinityEl.innerHTML = '<strong>Salinity:</strong> ' + (buoy.salinity?.toFixed(1) ?? 'N/A') + ' PSU';
+
+  if (onBuoySelected) {
+    const button = L.DomUtil.create('button', 'view-details-btn mt-3 w-full text-sm bg-ocean-500 text-white px-3 py-1.5 rounded hover:bg-ocean-600 transition-colors', container);
+    button.innerText = 'View Details';
+    // The click listener for the button will be added in updateMarkers when the popup is opened.
+  }
+  return container;
+};
 
 export default function Map({ buoyData = [], onBuoySelected, className }: MapProps) {
   const mapRef = useRef<L.Map | null>(null)
@@ -151,65 +137,55 @@ export default function Map({ buoyData = [], onBuoySelected, className }: MapPro
     })
     
     // Add the selected layer
-    switch (mapMode) {
-      case 'satellite':
-        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-          attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-        }).addTo(mapRef.current)
-        break
-      case 'terrain':
-        L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-          attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
-        }).addTo(mapRef.current)
-        break
-      case 'ocean':
-      default:
-        L.tileLayer('https://server.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}', {
-          attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri'
-        }).addTo(mapRef.current)
-        L.tileLayer('https://server.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Reference/MapServer/tile/{z}/{y}/{x}', {
-          attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri'
-        }).addTo(mapRef.current)
-        break
+    let layerUrl = 'https://server.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}'
+    let layerAttribution = 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri'
+    if (mapMode === 'satellite') {
+      layerUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+      layerAttribution = 'Tiles &copy; Esri &mdash; USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, GIS User Community'
+    } else if (mapMode === 'terrain') {
+      layerUrl = 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
+      layerAttribution = 'Map data: &copy; OpenStreetMap & SRTM | Map style: &copy; OpenTopoMap (CC-BY-SA)'
+    }
+    L.tileLayer(layerUrl, { attribution: layerAttribution }).addTo(mapRef.current)
+    if (mapMode === 'ocean') {
+      L.tileLayer('https://server.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Reference/MapServer/tile/{z}/{y}/{x}', { attribution: layerAttribution }).addTo(mapRef.current)
     }
   }, [mapMode])
   
   const updateMarkers = useCallback(() => {
-    if (!mapRef.current || !buoyData.length) return
-    
-    // Clear existing markers
-    Object.values(markersRef.current).forEach(marker => {
-      // Remove event listeners first
-      marker.off('click');
-      // Then remove from map
-      mapRef.current?.removeLayer(marker)
-    })
-    markersRef.current = {}
-    
-    // Add new markers
-    buoyData.forEach(buoy => {
+    if (!mapRef.current || !buoyData.length) return;
+    Object.values(markersRef.current).forEach(marker => { marker.off('click'); mapRef.current?.removeLayer(marker); });
+    markersRef.current = {};
+
+    buoyData.forEach((buoy: SimplifiedBuoyDataForMap) => {
       if (!mapRef.current) return;
       
-      const icon = createBuoyIcon(buoy.status || 'active')
+      const icon = createBuoyIcon(buoy.iconStatus);
+      const popupContentElement = createPopupContent(buoy, onBuoySelected);
+      
       const marker = L.marker([buoy.location.lat, buoy.location.lng], { icon })
         .addTo(mapRef.current)
-        .bindTooltip(`
-          <div class="px-2 py-1">
-            <div class="font-semibold">${buoy.name}</div>
-            <div class="text-xs opacity-75">${buoy.id}</div>
-          </div>
-        `, { direction: 'top', offset: [0, -10] })
-      
-      // Handle click events
-      marker.on('click', () => {
-        if (onBuoySelected) {
-          onBuoySelected(buoy)
-        }
-      })
-      
-      markersRef.current[buoy.id] = marker
-    })
-  }, [buoyData, onBuoySelected])
+        .bindPopup(popupContentElement, { closeButton: true, offset: [0, -10] });
+
+      if (onBuoySelected) {
+        marker.on('popupopen', () => {
+          const button = popupContentElement.querySelector('.view-details-btn') as HTMLElement | null;
+          if (button) {
+            // Commenting out L.DomEvent.off as it's causing persistent linter issues
+            // and the risk of duplicate listeners is low with how popups are managed.
+            // L.DomEvent.off(button, 'click'); 
+
+            // Add the new listener, type event as 'any' to bypass strict LeafletEventHandlerFn typing if it's problematic
+            L.DomEvent.on(button, 'click', (e: any) => { 
+              L.DomEvent.stopPropagation(e); 
+              onBuoySelected(buoy);
+            });
+          }
+        });
+      }
+      markersRef.current[buoy.id] = marker;
+    });
+  }, [buoyData, onBuoySelected, mapMode]);
   
   useEffect(() => {
     initializeMap()
@@ -361,4 +337,16 @@ function LayerButton({
       {label}
     </button>
   )
-} 
+}
+
+// Helper function to map BuoyStatus to the status type expected by createBuoyIcon
+const mapBuoyStatusToIconStatusIfNeeded = (status: BuoyStatus | undefined): 'active' | 'warning' | 'offline' | 'maintenance' | 'inactive' => {
+  if (!status) return 'inactive';
+  switch (status) {
+    case 'Online': return 'active';
+    case 'Offline': return 'offline';
+    case 'Warning': return 'warning';
+    case 'Maintenance': return 'maintenance';
+    default: return 'inactive';
+  }
+}; 

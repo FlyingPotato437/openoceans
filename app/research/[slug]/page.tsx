@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ChevronLeft, FileText, Users, Calendar, ExternalLink, Download, BookOpen, BarChart3, LinkIcon, ImageIcon } from 'lucide-react'
 import React from 'react'
 
@@ -216,7 +216,9 @@ const RESEARCH_PROJECTS = {
 }
 
 export default function ResearchProjectPage({ params }: { params: Promise<{ slug: string }> }) {
-  const [imageError, setImageError] = useState(false)
+  const [imageError, setImageError] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
+  useEffect(() => { setHasMounted(true); }, []);
   const unwrappedParams = React.use(params)
   const { slug } = unwrappedParams
   
@@ -304,18 +306,25 @@ export default function ResearchProjectPage({ params }: { params: Promise<{ slug
                 <div className="sticky top-24">
                   <div className="relative rounded-xl overflow-hidden mb-6 bg-gray-100 dark:bg-gray-800 aspect-[4/3]">
                     {!imageError ? (
-                      <Image 
-                        src={project.image} 
-                        alt={project.title}
-                        fill
-                        style={{ objectFit: 'cover' }}
-                        onError={() => setImageError(true)}
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex flex-col items-center justify-center">
-                        <ImageIcon className="h-16 w-16 text-gray-400" />
-                      </div>
-                    )}
+  <Image 
+    src={project.image} 
+    alt={project.title}
+    fill
+    style={{ objectFit: 'cover' }}
+    onError={() => setImageError(true)}
+  />
+) : hasMounted ? (
+  <div className="absolute inset-0 flex flex-col items-center justify-center">
+    <ImageIcon className="h-16 w-16 text-gray-400" />
+  </div>
+) : (
+  <Image 
+    src={project.image} 
+    alt={project.title}
+    fill
+    style={{ objectFit: 'cover' }}
+  />
+)}
                   </div>
                   
                   <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700">

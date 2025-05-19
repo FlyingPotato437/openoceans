@@ -1,5 +1,7 @@
 'use client'
 
+import { metadata } from './metadata'
+
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -85,7 +87,7 @@ export default function AboutPage() {
               Our Mission
             </div>
             
-            <h2 className="text-3xl md:text-4xl font-serif italic font-bold text-gray-900 dark:text-white mb-6 bg-clip-text text-transparent bg-gradient-to-r from-ocean-600 to-ocean-800 dark:from-ocean-400 dark:to-ocean-300 brush-bg">
+            <h2 className="text-3xl md:text-4xl font-serif italic font-bold text-transparent dark:text-white mb-6 bg-clip-text bg-gradient-to-r from-ocean-600 to-ocean-800 dark:from-ocean-400 dark:to-ocean-300 brush-bg">
               Monitoring and Protecting Our Oceans
             </h2>
             
@@ -173,7 +175,7 @@ export default function AboutPage() {
               The Team
             </div>
             
-            <h2 className="text-3xl md:text-4xl font-serif italic font-bold text-gray-900 dark:text-white mb-6 bg-clip-text text-transparent bg-gradient-to-r from-ocean-600 to-ocean-800 dark:from-ocean-400 dark:to-ocean-300 brush-bg">
+            <h2 className="text-3xl md:text-4xl font-serif italic font-bold text-transparent dark:text-white mb-6 bg-clip-text bg-gradient-to-r from-ocean-600 to-ocean-800 dark:from-ocean-400 dark:to-ocean-300 brush-bg">
               Meet the Ocean Expert
             </h2>
             
@@ -188,7 +190,7 @@ export default function AboutPage() {
                     <div className="relative w-16 h-16 rounded-full overflow-hidden mr-4 bg-ocean-100 dark:bg-ocean-900/40 flex items-center justify-center border-2 border-ocean-300 dark:border-ocean-700">
                       {!imageErrors['srikanth'] ? (
                         <Image 
-                          src="https://source.unsplash.com/random/200x200?portrait,professional" 
+                          src="/team/SrikanthCleanup.png" 
                           alt="Srikanth Samy"
                           fill
                           style={{ objectFit: 'cover' }}
@@ -228,7 +230,7 @@ export default function AboutPage() {
               Technology
             </div>
             
-            <h2 className="text-3xl md:text-4xl font-serif italic font-bold text-gray-900 dark:text-white mb-6 bg-clip-text text-transparent bg-gradient-to-r from-ocean-600 to-ocean-800 dark:from-ocean-400 dark:to-ocean-300 brush-bg">
+            <h2 className="text-3xl md:text-4xl font-serif italic font-bold text-transparent dark:text-white mb-6 bg-clip-text bg-gradient-to-r from-ocean-600 to-ocean-800 dark:from-ocean-400 dark:to-ocean-300 brush-bg">
               Smart Buoys & Data Systems
             </h2>
             
@@ -334,7 +336,7 @@ export default function AboutPage() {
                 {!imageErrors['buoy-diagram'] ? (
                   <Image 
                     src="/images/buoy-navigation.jpg" 
-                    alt="Smart buoy diagram"
+                    alt="Detailed diagram of a smart ocean monitoring buoy, showing sensors and navigation features, OpenOcean project"
                     fill
                     style={{ objectFit: 'cover' }}
                     className="mix-blend-overlay opacity-90"
@@ -353,7 +355,7 @@ export default function AboutPage() {
                 {!imageErrors['data-dashboard'] ? (
                   <Image 
                     src="/images/iceberg.jpg" 
-                    alt="OpenOcean data dashboard"
+                    alt="Screenshot of OpenOcean data dashboard displaying oceanographic analytics and buoy data visualization"
                     fill
                     style={{ objectFit: 'cover' }}
                     className="mix-blend-overlay opacity-90"

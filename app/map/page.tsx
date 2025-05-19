@@ -2,34 +2,36 @@
 
 import React, { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
-import { Info, MapPin, Filter, List, Grid3X3, ArrowDownToLine, Sparkles, CloudLightning, Waves, LifeBuoy, Anchor, Compass } from 'lucide-react'
+import { Info, MapPin, Filter, List, Grid3X3, ArrowDownToLine, Sparkles, CloudLightning, Waves, LifeBuoy, Anchor, Compass, ThermometerSnowflake, Droplet } from 'lucide-react'
 import BuoyDetailPanel from '@/components/BuoyDetailPanel'
 import Link from 'next/link'
+import { Buoy, BuoyStatus } from '@/lib/types'
+import { useSimulatedBuoyData } from '@/lib/hooks/useSimulatedBuoyData'
 
 // Define our Buoy type that matches the one in Map.tsx
-type BuoyData = {
-  id: string
-  name: string
-  location: {
-    lat: number
-    lng: number
-  }
-  status: 'active' | 'warning' | 'offline' | 'maintenance' | 'inactive'
-  data?: {
-    temperature: number
-    salinity: number
-    ph: number
-    dissolved_oxygen: number
-  }
-  sensors?: {
-    temperature: number
-    pH: number
-    salinity: number
-    turbidity: number
-    dissolved_oxygen: number
-  }
-  type: string
-}
+// type BuoyData = { // This will be replaced by the imported Buoy type
+//   id: string
+//   name: string
+//   location: {
+//     lat: number
+//     lng: number
+//   }
+//   status: 'active' | 'warning' | 'offline' | 'maintenance' | 'inactive' // This will use BuoyStatus
+//   data?: { // This will be BuoyDataMetrics
+//     temperature: number
+//     salinity: number
+//     ph: number
+//     dissolved_oxygen: number
+//   }
+//   sensors?: {
+//     temperature: number
+//     pH: number
+//     salinity: number
+//     turbidity: number
+//     dissolved_oxygen: number
+//   }
+//   type: string
+// }
 
 // Dynamically import the Map component to avoid SSR issues with Leaflet
 const MapComponent = dynamic(() => import('@/components/Map'), { 
@@ -42,260 +44,44 @@ const MapComponent = dynamic(() => import('@/components/Map'), {
 })
 
 // Enhanced buoy data with more buoys placed in water not land
-const BUOY_DATA: BuoyData[] = [
-  {
-    id: 'B001',
-    name: 'North Atlantic Buoy',
-    location: {
-      lat: 41.2176,
-      lng: -37.6273,
-    },
-    status: 'active',
-    data: {
-      temperature: 18.5,
-      salinity: 35.5,
-      ph: 8.1,
-      dissolved_oxygen: 7.2,
-    },
-    type: 'standard',
-  },
-  {
-    id: 'B002',
-    name: 'Pacific Northwest Buoy',
-    location: {
-      lat: 42.1245,
-      lng: -128.7382,
-    },
-    status: 'warning',
-    data: {
-      temperature: 15.7,
-      salinity: 33.8,
-      ph: 8.0,
-      dissolved_oxygen: 6.9,
-    },
-    type: 'standard',
-  },
-  {
-    id: 'B003',
-    name: 'Mediterranean Buoy',
-    location: {
-      lat: 37.5024,
-      lng: 15.5931,
-    },
-    status: 'warning',
-    data: {
-      temperature: 22.1,
-      ph: 8.0,
-      salinity: 38.2,
-      dissolved_oxygen: 6.5,
-    },
-    type: 'standard',
-  },
-  {
-    id: 'B004',
-    name: 'Caribbean Buoy',
-    location: {
-      lat: 18.2208,
-      lng: -66.5901,
-    },
-    status: 'active',
-    data: {
-      temperature: 27.8,
-      salinity: 36.0,
-      ph: 8.1,
-      dissolved_oxygen: 6.7,
-    },
-    type: 'standard',
-  },
-  {
-    id: 'B005',
-    name: 'South China Sea Buoy',
-    location: {
-      lat: 10.7500,
-      lng: 115.8000,
-    },
-    status: 'active',
-    data: {
-      temperature: 29.2,
-      salinity: 34.5,
-      ph: 8.0,
-      dissolved_oxygen: 6.3,
-    },
-    type: 'standard',
-  },
-  {
-    id: 'B006',
-    name: 'Red Sea Buoy',
-    location: {
-      lat: 27.9654,
-      lng: 34.5733,
-    },
-    status: 'offline',
-    data: {
-      temperature: 26.5,
-      salinity: 40.1,
-      ph: 8.2,
-      dissolved_oxygen: 6.0,
-    },
-    type: 'standard',
-  },
-  {
-    id: 'B007',
-    name: 'North Atlantic Buoy',
-    location: {
-      lat: 42.3601,
-      lng: -40.0589,
-    },
-    status: 'active',
-    data: {
-      temperature: 15.7,
-      salinity: 34.8,
-      ph: 8.1,
-      dissolved_oxygen: 7.5,
-    },
-    type: 'standard',
-  },
-  {
-    id: 'B008',
-    name: 'South Pacific Buoy',
-    location: {
-      lat: -15.7781,
-      lng: -170.1322,
-    },
-    status: 'active',
-    data: {
-      temperature: 27.3,
-      salinity: 35.4,
-      ph: 8.2,
-      dissolved_oxygen: 6.9,
-    },
-    type: 'standard',
-  },
-  {
-    id: 'B009',
-    name: 'Indian Ocean Buoy',
-    location: {
-      lat: -8.3405,
-      lng: 80.5098,
-    },
-    status: 'active',
-    data: {
-      temperature: 28.6,
-      salinity: 34.9,
-      ph: 8.0,
-      dissolved_oxygen: 6.4,
-    },
-    type: 'standard',
-  },
-  {
-    id: 'B010',
-    name: 'Gulf of Mexico Buoy',
-    location: {
-      lat: 25.7617,
-      lng: -89.3965,
-    },
-    status: 'warning',
-    data: {
-      temperature: 26.2,
-      salinity: 36.2,
-      ph: 7.9,
-      dissolved_oxygen: 6.3,
-    },
-    type: 'standard',
-  },
-  {
-    id: 'B011',
-    name: 'Baltic Sea Buoy',
-    location: {
-      lat: 58.5953,
-      lng: 18.2812,
-    },
-    status: 'active',
-    data: {
-      temperature: 14.2,
-      salinity: 8.5,
-      ph: 8.3,
-      dissolved_oxygen: 8.1,
-    },
-    type: 'standard',
-  },
-  {
-    id: 'B012',
-    name: 'South Atlantic Buoy',
-    location: {
-      lat: -34.6037,
-      lng: -18.3814,
-    },
-    status: 'active',
-    data: {
-      temperature: 19.1,
-      salinity: 35.3,
-      ph: 8.1,
-      dissolved_oxygen: 7.0,
-    },
-    type: 'standard',
-  },
-  {
-    id: 'B013',
-    name: 'Arctic Ocean Buoy',
-    location: {
-      lat: 78.9218,
-      lng: -3.9875,
-    },
-    status: 'warning',
-    data: {
-      temperature: 3.2,
-      salinity: 34.2,
-      ph: 8.0,
-      dissolved_oxygen: 8.7,
-    },
-    type: 'standard',
-  },
-  {
-    id: 'B014',
-    name: 'REEFlect Coral Monitoring Buoy 1',
-    location: {
-      lat: 24.5551,
-      lng: -81.7800,
-    },
-    status: 'active',
-    data: {
-      temperature: 26.7,
-      salinity: 36.1,
-      ph: 8.2,
-      dissolved_oxygen: 6.9,
-    },
-    type: 'reeflect',
-  },
-  {
-    id: 'B015',
-    name: 'REEFlect Coral Monitoring Buoy 2',
-    location: {
-      lat: 16.7406,
-      lng: -169.5209,
-    },
-    status: 'active',
-    data: {
-      temperature: 27.9,
-      salinity: 35.8,
-      ph: 8.1,
-      dissolved_oxygen: 6.8,
-    },
-    type: 'reeflect',
-  },
-]
+// const BUOY_DATA: Buoy[] = [ ...this whole array will be removed... ]; // THIS ENTIRE BLOCK IS REMOVED
+
+// Helper function to map BuoyStatus to the icon status string
+const mapBuoyStatusToIconStatus = (status: BuoyStatus | undefined): 'active' | 'warning' | 'offline' | 'maintenance' | 'inactive' => {
+  if (!status) return 'inactive';
+  switch (status) {
+    case 'Online': return 'active';
+    case 'Offline': return 'offline';
+    case 'Warning': return 'warning';
+    case 'Maintenance': return 'maintenance';
+    default: return 'inactive';
+  }
+};
 
 export default function MapPage() {
-  const [selectedBuoy, setSelectedBuoy] = useState<string | null>(null)
+  const buoys = useSimulatedBuoyData()
+  const [selectedBuoyId, setSelectedBuoyId] = useState<string | null>(null) // Renamed from selectedBuoy for clarity
   const [showBuoyDetail, setShowBuoyDetail] = useState(false)
   const [showInfo, setShowInfo] = useState(false)
   const [viewMode, setViewMode] = useState<'map' | 'list' | 'grid'>('map')
   const [filterOpen, setFilterOpen] = useState(false)
 
-  const handleBuoySelect = (buoy: BuoyData) => {
-    setSelectedBuoy(buoy.id)
+  const handleBuoySelect = (buoy: Buoy) => { // Receives full Buoy if detail panel needs it
+    setSelectedBuoyId(buoy.id)
     setShowBuoyDetail(true)
   }
+
+  // Transform Buoy[] to SimplifiedBuoyDataForMap[] for the MapComponent
+  const mapPageBuoyDataForMap = buoys.map(buoy => ({
+    id: buoy.id,
+    name: buoy.name,
+    location: buoy.location,
+    status: buoy.status, // Display status
+    waterTemp: buoy.data.waterTemp,
+    waveHeight: buoy.data.waveHeight,
+    salinity: buoy.data.salinity,
+    iconStatus: mapBuoyStatusToIconStatus(buoy.status) // For marker icon
+  }));
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950 pt-16">
@@ -472,8 +258,14 @@ export default function MapPage() {
           <div className="rounded-xl overflow-hidden shadow-xl border-2 border-ocean-200 dark:border-ocean-800/50 h-[calc(100vh-12rem)] relative hand-drawn-box">
             <div className="absolute inset-0 bg-gradient-to-b from-ocean-50/50 to-transparent pointer-events-none z-10 h-8 opacity-70"></div>
             <MapComponent 
-              buoyData={BUOY_DATA as any} 
-              onBuoySelected={(buoy: any) => handleBuoySelect(buoy as BuoyData)} 
+              buoyData={mapPageBuoyDataForMap.slice(0, 3)} 
+              onBuoySelected={(selectedMapBuoy) => {
+                // Find the original full buoy object to pass to the detail panel
+                const fullBuoy = buoys.find(b => b.id === selectedMapBuoy.id);
+                if (fullBuoy) {
+                  handleBuoySelect(fullBuoy);
+                }
+              }} 
             />
             <div className="absolute bottom-4 left-4 flex space-x-2 z-10">
               <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg text-xs text-ocean-800 dark:text-ocean-200 border border-ocean-100 dark:border-ocean-800 flex items-center transform -rotate-1 doodle-border">
@@ -486,7 +278,7 @@ export default function MapPage() {
         
         {viewMode === 'list' && (
           <div className="rounded-xl overflow-hidden shadow-xl border-2 border-ocean-200 dark:border-ocean-800/50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm divide-y divide-ocean-100 dark:divide-gray-800 animate-in fade-in zoom-in-95 duration-300 hand-drawn-box">
-            {BUOY_DATA.map((buoy) => (
+            {buoys.slice(0,3).map((buoy) => ( // Also slice here for consistency in list view
               <div key={buoy.id} className="p-5 flex items-center justify-between hover:bg-ocean-50/70 dark:hover:bg-gray-800/70 transition-colors duration-200">
                 <div className="flex items-center">
                   <div className="w-12 h-12 rounded-full bg-ocean-100 dark:bg-ocean-900/40 flex items-center justify-center mr-4 border-2 border-ocean-200 dark:border-ocean-800 shadow-inner relative overflow-hidden doodle-border">
@@ -506,14 +298,14 @@ export default function MapPage() {
                     </div>
                     <div className="flex items-center mt-1">
                       <div className={`w-2 h-2 rounded-full mr-1.5 ${
-                        buoy.status === 'active' ? 'bg-green-500' : 
-                        buoy.status === 'warning' ? 'bg-amber-500' : 
-                        buoy.status === 'maintenance' ? 'bg-blue-500' : 'bg-red-500'
+                        buoy.status === 'Online' ? 'bg-green-500' : 
+                        buoy.status === 'Warning' ? 'bg-amber-500' : 
+                        buoy.status === 'Maintenance' ? 'bg-blue-500' : 'bg-red-500'
                       }`}></div>
                       <span className="text-xs font-medium text-gray-500 dark:text-gray-500">
-                        {buoy.status === 'active' ? 'Active' : 
-                         buoy.status === 'warning' ? 'Warning' : 
-                         buoy.status === 'maintenance' ? 'Maintenance' : 'Offline'}
+                        {buoy.status === 'Online' ? 'Active' : 
+                         buoy.status === 'Warning' ? 'Warning' : 
+                         buoy.status === 'Maintenance' ? 'Maintenance' : 'Offline'}
                       </span>
                     </div>
                   </div>
@@ -531,7 +323,7 @@ export default function MapPage() {
         
         {viewMode === 'grid' && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in zoom-in-95 duration-300">
-            {BUOY_DATA.map((buoy) => (
+            {buoys.map((buoy) => (
               <div 
                 key={buoy.id} 
                 onClick={() => handleBuoySelect(buoy)}
@@ -558,9 +350,9 @@ export default function MapPage() {
                   
                   <div className="absolute top-3 left-3">
                     <div className={`w-3 h-3 rounded-full animate-pulse ${
-                      buoy.status === 'active' ? 'bg-green-500' : 
-                      buoy.status === 'warning' ? 'bg-amber-500' : 
-                      buoy.status === 'maintenance' ? 'bg-blue-500' : 'bg-red-500'
+                      buoy.status === 'Online' ? 'bg-green-500' : 
+                      buoy.status === 'Warning' ? 'bg-amber-500' : 
+                      buoy.status === 'Maintenance' ? 'bg-blue-500' : 'bg-red-500'
                     } ring-4 ring-white/30 dark:ring-black/30`}></div>
                   </div>
                 </div>
@@ -570,16 +362,25 @@ export default function MapPage() {
                   <p className="text-sm font-mono text-gray-600 dark:text-gray-400 mt-1 mb-4">{buoy.location.lat.toFixed(2)}°N, {buoy.location.lng.toFixed(2)}°W</p>
                   
                   <div className="grid grid-cols-2 gap-3 mb-4">
-                    <div className="bg-ocean-50/70 dark:bg-gray-800/70 rounded-lg p-2 flex flex-col items-center justify-center blob-shape">
+                    <div className="flex flex-col items-center p-3 bg-ocean-50/50 dark:bg-gray-800/50 rounded-lg shadow-inner-sm hand-drawn-border-light">
+                      <ThermometerSnowflake className="w-6 h-6 text-blue-500 mb-1" />
                       <span className="text-xs text-gray-500 dark:text-gray-400">Temperature</span>
                       <span className="text-lg font-bold text-ocean-600 dark:text-ocean-400">
-                        {(buoy.data?.temperature || buoy.sensors?.temperature || 0).toFixed(1)}°C
+                        {(buoy.data?.waterTemp || 0).toFixed(1)}°C
                       </span>
                     </div>
-                    <div className="bg-ocean-50/70 dark:bg-gray-800/70 rounded-lg p-2 flex flex-col items-center justify-center blob-shape-alt">
+                    <div className="flex flex-col items-center p-3 bg-ocean-50/50 dark:bg-gray-800/50 rounded-lg shadow-inner-sm hand-drawn-border-light">
+                      <Waves className="w-6 h-6 text-teal-500 mb-1" />
+                      <span className="text-xs text-gray-500 dark:text-gray-400">Wave Height</span>
+                      <span className="text-lg font-bold text-ocean-600 dark:text-ocean-400">
+                        {(buoy.data?.waveHeight || 0).toFixed(2)}m
+                      </span>
+                    </div>
+                    <div className="flex flex-col items-center p-3 bg-ocean-50/50 dark:bg-gray-800/50 rounded-lg shadow-inner-sm hand-drawn-border-light">
+                      <Droplet className="w-6 h-6 text-sky-500 mb-1" />
                       <span className="text-xs text-gray-500 dark:text-gray-400">Salinity</span>
                       <span className="text-lg font-bold text-ocean-600 dark:text-ocean-400">
-                        {(buoy.data?.salinity || buoy.sensors?.salinity || 0).toFixed(1)}
+                        {(buoy.data?.salinity || 0).toFixed(1)}PSU
                       </span>
                     </div>
                   </div>
@@ -587,14 +388,14 @@ export default function MapPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <div className={`w-2 h-2 rounded-full mr-1.5 ${
-                        buoy.status === 'active' ? 'bg-green-500' : 
-                        buoy.status === 'warning' ? 'bg-amber-500' : 
-                        buoy.status === 'maintenance' ? 'bg-blue-500' : 'bg-red-500'
+                        buoy.status === 'Online' ? 'bg-green-500' : 
+                        buoy.status === 'Warning' ? 'bg-amber-500' : 
+                        buoy.status === 'Maintenance' ? 'bg-blue-500' : 'bg-red-500'
                       }`}></div>
                       <span className="text-xs font-medium text-gray-500 dark:text-gray-500">
-                        {buoy.status === 'active' ? 'Active' : 
-                         buoy.status === 'warning' ? 'Warning' : 
-                         buoy.status === 'maintenance' ? 'Maintenance' : 'Offline'}
+                        {buoy.status === 'Online' ? 'Active' : 
+                         buoy.status === 'Warning' ? 'Warning' : 
+                         buoy.status === 'Maintenance' ? 'Maintenance' : 'Offline'}
                       </span>
                     </div>
                     <span className="text-xs font-medium text-gray-500 dark:text-gray-500 wavy-text">{buoy.id}</span>
@@ -609,10 +410,10 @@ export default function MapPage() {
           </div>
         )}
         
-        {showBuoyDetail && selectedBuoy && (
+        {showBuoyDetail && selectedBuoyId && (
           <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
             <BuoyDetailPanel 
-              buoy={BUOY_DATA.find(b => b.id === selectedBuoy)!}
+              buoy={buoys.find(b => b.id === selectedBuoyId)!}
               onClose={() => setShowBuoyDetail(false)}
             />
           </div>

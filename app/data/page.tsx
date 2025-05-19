@@ -32,7 +32,7 @@ export default function DataPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <Link 
                 href="/data/browse" 
-                className="bg-white dark:bg-gray-800 blob-shape shadow-md hover:shadow-lg transition-shadow overflow-hidden flex flex-col transform hover:-rotate-1 hover:scale-[1.02] transition-all duration-300"
+                className="bg-white dark:bg-gray-800 blob-shape shadow-md hover:transition-all overflow-hidden flex flex-col transform hover:-rotate-1 hover:scale-[1.02] duration-300"
               >
                 <div className="h-40 bg-ocean-100 dark:bg-ocean-900 relative">
                   <div className="absolute inset-0 bg-[url('/images/dot-pattern.png')] opacity-5 mix-blend-overlay"></div>
@@ -52,7 +52,7 @@ export default function DataPage() {
               
               <Link 
                 href="/data/api" 
-                className="bg-white dark:bg-gray-800 blob-shape-alt shadow-md hover:shadow-lg transition-shadow overflow-hidden flex flex-col transform hover:rotate-1 hover:scale-[1.02] transition-all duration-300"
+                className="bg-white dark:bg-gray-800 blob-shape-alt shadow-md hover:transition-all overflow-hidden flex flex-col transform hover:rotate-1 hover:scale-[1.02] duration-300"
               >
                 <div className="h-40 bg-ocean-100 dark:bg-ocean-900 relative">
                   <div className="absolute inset-0 bg-[url('/images/dot-pattern.png')] opacity-5 mix-blend-overlay"></div>
@@ -72,7 +72,7 @@ export default function DataPage() {
               
               <Link 
                 href="/data/download" 
-                className="bg-white dark:bg-gray-800 blob-shape shadow-md hover:shadow-lg transition-shadow overflow-hidden flex flex-col transform hover:-rotate-1 hover:scale-[1.02] transition-all duration-300"
+                className="bg-white dark:bg-gray-800 blob-shape shadow-md hover:transition-all overflow-hidden flex flex-col transform hover:-rotate-1 hover:scale-[1.02] duration-300"
               >
                 <div className="h-40 bg-ocean-100 dark:bg-ocean-900 relative">
                   <div className="absolute inset-0 bg-[url('/images/dot-pattern.png')] opacity-5 mix-blend-overlay"></div>
@@ -140,8 +140,8 @@ export default function DataPage() {
                 <div className="bg-ocean-600 dark:bg-ocean-900 relative hidden md:block">
                   <div className="absolute inset-0">
                     <Image 
-                      src="https://source.unsplash.com/random/1200x800?coral,reef,ocean" 
-                      alt="Coral reef data visualization"
+                      src="/images/coral-reef.jpg" 
+                      alt="High-resolution photo of a coral reef ecosystem, public domain or licensed for educational use"
                       fill
                       style={{ objectFit: 'cover' }}
                       className="mix-blend-overlay opacity-50"

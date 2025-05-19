@@ -42,6 +42,9 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://openocean.org'),
   title: 'OpenOcean',
   description: 'An open-source initiative for oceanographic data visualization and analysis',
+  icons: {
+    icon: '/logos/openoceans_favicon.png',
+  },
   keywords: [
     'oceanography',
     'climate',
@@ -71,17 +74,26 @@ export const metadata: Metadata = {
     title: 'OpenOcean',
     description: 'An open-source initiative for oceanographic data visualization and analysis',
     siteName: 'OpenOcean',
+    images: [
+      {
+        url: '/images/reeflect-logo.svg', // TODO: Replace with a more representative ocean image if desired
+        width: 1200,
+        height: 630,
+        alt: 'OpenOcean Logo',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'OpenOcean',
     description: 'An open-source initiative for oceanographic data visualization and analysis',
     creator: '@openocean',
-  },
-  icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon-16x16.png',
-    apple: '/apple-touch-icon.png',
+    images: [
+      {
+        url: '/images/reeflect-logo.svg', // TODO: Replace with a more representative ocean image if desired
+        alt: 'OpenOcean Logo',
+      },
+    ],
   },
 }
 

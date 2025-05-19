@@ -12,7 +12,8 @@ const RESEARCH_PROJECTS = [
     id: 'coral-bleaching',
     title: 'Coral Reef Bleaching Early Warning System',
     description: 'Developing an AI-powered early warning system for detecting and predicting coral bleaching events based on temperature anomalies and other environmental factors.',
-    image: 'https://source.unsplash.com/random/800x600?coral,reef,bleaching',
+    image: 'https://www.pictureboxblue.com/wp-content/uploads/2020/03/Great-Barrier-Reef-Coral-Illustration.jpg', // Public domain illustration, see https://www.pictureboxblue.com/coral-reef-illustrations/
+    alt: 'Vintage illustration of coral reef bleaching, Great Barrier Reef',
     status: 'Active',
     partners: ['REEFlect Foundation', 'University of Queensland', 'NOAA'],
     publications: 2,
@@ -22,7 +23,8 @@ const RESEARCH_PROJECTS = [
     id: 'ocean-acidification',
     title: 'Global Ocean Acidification Monitoring',
     description: 'Tracking pH changes across the global ocean to understand the pace and impacts of ocean acidification on marine ecosystems and carbon cycling.',
-    image: 'https://source.unsplash.com/random/800x600?ocean,water,blue',
+    image: 'https://climatekids.nasa.gov/images/ocean-waves-public-domain.jpg', // Public domain, NASA Climate Kids
+    alt: 'Public domain photo of ocean waves off the coast of New Zealand, illustrating ocean acidification',
     status: 'Active',
     partners: ['Global Ocean Observing System', 'Scripps Institution of Oceanography'],
     publications: 5,
@@ -32,7 +34,8 @@ const RESEARCH_PROJECTS = [
     id: 'marine-heatwaves',
     title: 'Marine Heatwave Dynamics and Ecosystem Impacts',
     description: 'Investigating the frequency, intensity, and ecological impacts of marine heatwaves in a changing climate.',
-    image: 'https://source.unsplash.com/random/800x600?ocean,waves,sunset',
+    image: 'https://coralreefwatch.noaa.gov/data_current/marine_heatwave/v1.0.1/daily/png/noaa-crw_mhw_v1.0.1_category_global_current.png', // NOAA public domain
+    alt: 'NOAA global marine heatwave map, showing ocean temperature anomalies',
     status: 'Active',
     partners: ['Woods Hole Oceanographic Institution', 'REEFlect Foundation'],
     publications: 3,
@@ -42,7 +45,8 @@ const RESEARCH_PROJECTS = [
     id: 'oxygen-decline',
     title: 'Deoxygenation Trends in Coastal Waters',
     description: 'Monitoring dissolved oxygen levels in coastal regions to track the expansion of hypoxic zones and their effects on marine life.',
-    image: 'https://source.unsplash.com/random/800x600?coastal,shore,beach',
+    image: '/images/oxygen-data.jpg', // Local fallback. If not present, use NASA public domain: https://climatekids.nasa.gov/images/ocean-waves-public-domain.jpg
+    alt: 'Visualization of declining oxygen levels in coastal waters',
     status: 'Active',
     partners: ['Coastal Ocean Observation Lab', 'University of Washington'],
     publications: 1,

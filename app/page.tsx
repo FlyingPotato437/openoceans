@@ -20,12 +20,18 @@ import {
   Users, 
   AlertCircle,
   Info,
-  ArrowRight
+  ArrowRight,
+  MapPin 
 } from 'lucide-react'
+import { Buoy, BuoyDataMetrics, BuoyStatus } from '@/lib/types'
+import { BUOY_DATA } from '@/lib/buoy-data';
 import { BuoyCard } from '@/components/ui/BuoyCard'
 import BuoyDetailPanel from '@/components/BuoyDetailPanel'
 import { Globe } from '@/components/ui/globe'
+import ReeflectCarousel from '@/components/ReeflectCarousel'
 import { downloadData } from '@/lib/download'
+import { useSimulatedBuoyData } from '@/lib/hooks/useSimulatedBuoyData';
+import { AlertTriangle } from 'lucide-react';
 
 // Dynamically import the MiniMap component to avoid SSR issues with Leaflet
 const MiniMap = dynamic(() => import('@/components/MiniMap'), {
@@ -42,89 +48,14 @@ const MapComponent = dynamic(() => import('@/components/Map'), {
   ssr: false,
   loading: () => (
     <div className="h-[600px] w-full bg-gray-100 dark:bg-gray-800 animate-pulse rounded-xl flex items-center justify-center">
-      <p className="text-lg text-gray-500 dark:text-gray-400">Loading map...</p>
+      <div className="flex flex-col items-center">
+        <Globe2 className="h-12 w-12 text-ocean-500 dark:text-ocean-400 animate-spin-slow mb-4" />
+        <p className="text-lg text-gray-500 dark:text-gray-400 font-mono">Syncing with buoy network...</p>
+        <p className="text-sm text-gray-400 dark:text-gray-500">Please wait while we fetch the latest data.</p>
+      </div>
     </div>
   ),
 })
-
-// Sample buoy data - Reduced to 5 buoys
-const BUOY_DATA = [
-  {
-    id: 'PNW-01',
-    name: 'Oregon Shelf Buoy',
-    location: {
-      lat: 45.5155,
-      lng: -122.6789,
-    },
-    type: 'oceanographic',
-    data: {
-      temperature: 18.5,
-      salinity: 35.1,
-      ph: 8.1,
-      dissolved_oxygen: 7.2,
-    },
-  },
-  {
-    id: 'GBR-03',
-    name: 'Coral Sea Sensor Array',
-    location: {
-      lat: -16.9203,
-      lng: 145.7710,
-    },
-    type: 'oceanographic',
-    data: {
-      temperature: 25.3,
-      salinity: 35.6,
-      ph: 8.2,
-      dissolved_oxygen: 6.8,
-    },
-  },
-  {
-    id: 'MED-05',
-    name: 'Tyrrhenian Sea Monitor',
-    location: {
-      lat: 37.5024,
-      lng: 15.0931,
-    },
-    type: 'oceanographic',
-    data: {
-      temperature: 22.1,
-      salinity: 38.2,
-      ph: 8.0,
-      dissolved_oxygen: 6.5,
-    },
-  },
-  {
-    id: 'CAR-02',
-    name: 'Antilles Current Buoy',
-    location: {
-      lat: 18.2208,
-      lng: -66.5901,
-    },
-    type: 'oceanographic',
-    data: {
-      temperature: 27.8,
-      salinity: 36.0,
-      ph: 8.1,
-      dissolved_oxygen: 6.7,
-    },
-  },
-  {
-    id: 'SCS-04',
-    name: 'Spratly Islands Station',
-    location: {
-      lat: 10.7500,
-      lng: 115.8000,
-    },
-    type: 'oceanographic',
-    data: {
-      temperature: 29.2,
-      salinity: 34.5,
-      ph: 8.0,
-      dissolved_oxygen: 6.3,
-    },
-  }
-]
 
 // DATASETS constant already defined, matching the 5 datasets from app/data/download/page.tsx
 // For the homepage, we will use the first 4 of these for the CardCarousel for a balanced look.
@@ -167,53 +98,76 @@ const HOMEPAGE_DATASETS = [
   }
 ]
 
+// Define a minimal type for the buoy object passed from MapComponent
+interface SelectedBuoyFromMap {
+  id: string;
+  // include other properties from BuoyMapDisplayData if they are used by handleBuoySelect,
+  // but it seems only 'id' is used to set selectedBuoyId.
+}
+
 export default function Home() {
-  const [selectedBuoy, setSelectedBuoy] = useState<string | null>(null)
-  const [showBuoyDetail, setShowBuoyDetail] = useState(false)
-  const [downloadFormat, setDownloadFormat] = useState<'csv' | 'json' | 'excel'>('csv')
-  const heroRef = useRef<HTMLDivElement>(null)
-  const [heroVisible, setHeroVisible] = useState(true)
+  const buoys = useSimulatedBuoyData();
+  const [selectedBuoyId, setSelectedBuoyId] = useState<string | null>(null);
+  const [showBuoyDetail, setShowBuoyDetail] = useState(false);
+  const [lastUpdateTime, setLastUpdateTime] = useState(new Date());
+
+  // State for animated stats
+  const [animatedDataPoints, setAnimatedDataPoints] = useState(0);
+  const [animatedPartners, setAnimatedPartners] = useState(0);
+
+  const initialDataPoints = 12.8;
+  const targetPartners = 43;
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (heroRef.current) {
-        const rect = heroRef.current.getBoundingClientRect()
-        setHeroVisible(rect.bottom > 0)
-      }
-    }
+    const timerId = setInterval(() => {
+      setLastUpdateTime(new Date());
+    }, 5000);
+    return () => clearInterval(timerId);
+  }, []);
 
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  // Effect for counting animation & continuous increment
+  useEffect(() => {
+    const animateValue = (setter: React.Dispatch<React.SetStateAction<number>>, target: number, duration: number, isFloat: boolean = false, onComplete?: () => void) => {
+      let startTimestamp: number | null = null;
+      const step = (timestamp: number) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        const value = progress * target;
+        setter(isFloat ? parseFloat(value.toFixed(1)) : Math.floor(value));
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        } else if (onComplete) {
+          onComplete();
+        }
+      };
+      requestAnimationFrame(step);
+    };
 
-  const handleBuoySelect = (buoy: any) => {
-    if (!buoy.type) {
-      buoy.type = 'oceanographic'
-    }
-    setSelectedBuoy(buoy.id)
-    setShowBuoyDetail(true)
-  }
+    animateValue(setAnimatedDataPoints, initialDataPoints, 1500, true, () => {
+      // Start continuous increment after initial animation
+      setInterval(() => {
+        setAnimatedDataPoints(prev => parseFloat((prev + 0.1).toFixed(1)));
+      }, 10000); // Increment every 10 seconds
+    });
+    animateValue(setAnimatedPartners, targetPartners, 1500);
+  }, []);
 
-  const handleDownload = (datasetId: string) => {
-    const dataUrls: { [key: string]: string } = {
-      'temperature': '/data/sample_buoy_data.json',
-      'salinity': '/data/sample_buoy_data.json',
-      'ph': '/data/sample_buoy_data.json', 
-      'dissolved_oxygen': '/data/sample_buoy_data.json',
-      'complete': '/data/sample_buoy_data.json'
+  const handleBuoySelect = (buoyFromMap: { id: string }) => {
+    setSelectedBuoyId(buoyFromMap.id);
+    setShowBuoyDetail(true);
+  };
+
+  // Helper function to map BuoyStatus to the icon status string for MapComponent
+  const mapBuoyStatusToIconStatus = (status: BuoyStatus | undefined): 'active' | 'warning' | 'offline' | 'maintenance' | 'inactive' => {
+    if (!status) return 'inactive';
+    switch (status) {
+      case 'Online': return 'active';
+      case 'Offline': return 'offline';
+      case 'Warning': return 'warning';
+      case 'Maintenance': return 'maintenance';
+      default: return 'inactive';
     }
-    
-    const url = dataUrls[datasetId]
-    if (url) {
-      downloadData(url, {
-        filename: `reeflect_${datasetId}_data`,
-        format: downloadFormat
-      })
-    } else {
-      // In a real app, this would trigger a download from the server
-      alert(`Downloading ${datasetId} dataset in ${downloadFormat} format`)
-    }
-  }
+  };
 
   return (
     <>
@@ -247,7 +201,7 @@ export default function Home() {
         
         <div className="container mx-auto px-4 z-10">
           <div className="flex flex-col lg:flex-row items-center justify-between">
-            <div className="lg:w-1/2 py-16 lg:pr-12 z-20">
+            <div className="lg:w-1/2 py-16 lg:pr-12 z-20 relative">
               <div className="max-w-2xl relative">
                 {/* Enhanced badge with organic shape and handwritten font */}
                 <div className="inline-flex items-center px-3 py-1.5 mb-6 bg-gradient-to-r from-ocean-50/80 to-blue-50/80 dark:from-ocean-900/40 dark:to-blue-900/50 border-l-4 border-ocean-600 rounded-lg backdrop-blur-sm relative overflow-hidden group transform hover:scale-105 transition-all duration-300 hand-drawn-box">
@@ -317,7 +271,7 @@ export default function Home() {
                     </div>
                     <div>
                       <p className="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 font-medium">Data Points</p>
-                      <p className="text-2xl font-bold text-black dark:text-white font-mono group-hover:text-ocean-600 dark:group-hover:text-ocean-400 transition-colors duration-300">12.8M+</p>
+                      <p className="text-2xl font-bold text-black dark:text-white font-mono group-hover:text-ocean-600 dark:group-hover:text-ocean-400 transition-colors duration-300">{animatedDataPoints}M+</p>
                     </div>
                   </div>
                   
@@ -327,7 +281,7 @@ export default function Home() {
                     </div>
                     <div>
                       <p className="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 font-medium">Buoys Deployed</p>
-                      <p className="text-2xl font-bold text-black dark:text-white font-mono group-hover:text-ocean-600 dark:group-hover:text-ocean-400 transition-colors duration-300">5</p>
+                      <p className="text-2xl font-bold text-black dark:text-white font-mono group-hover:text-ocean-600 dark:group-hover:text-ocean-400 transition-colors duration-300">3</p>
                     </div>
                   </div>
                   
@@ -337,54 +291,37 @@ export default function Home() {
                     </div>
                     <div>
                       <p className="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 font-medium">Research Partners</p>
-                      <p className="text-2xl font-bold text-black dark:text-white font-mono group-hover:text-ocean-600 dark:group-hover:text-ocean-400 transition-colors duration-300">43</p>
+                      <p className="text-2xl font-bold text-black dark:text-white font-mono group-hover:text-ocean-600 dark:group-hover:text-ocean-400 transition-colors duration-300">{animatedPartners}</p>
                     </div>
                   </div>
                 </div>
+                {/* Last Updated Timestamp */}
+                <div className="mt-6 text-xs text-gray-500 dark:text-gray-400 font-mono animate-fade-in animation-delay-800">
+                  <p>Data stream active. Last synchronized: {lastUpdateTime.toLocaleTimeString()}</p>
+                </div>
               </div>
             </div>
-            
-            <div className="w-full lg:w-1/2 relative h-[320px] md:h-[400px] lg:h-[550px] z-10">
-              <div className="absolute inset-0 pointer-events-none animate-fade-in lg:-ml-16">
-                {/* Enhanced globe with 3D effects and better animations */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] md:w-[400px] lg:w-[550px] aspect-square animate-spin-slow drop-shadow-2xl">
-                  <Globe />
-                </div>
-                {/* Enhanced highlight rings around the globe with glass morphism */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] md:w-[440px] lg:w-[590px] aspect-square rounded-full border-2 border-dashed border-ocean-300/40 dark:border-ocean-700/40 animate-spin-reverse-slower"></div>
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] md:w-[460px] lg:w-[620px] aspect-square rounded-full border border-ocean-200/30 dark:border-ocean-800/30 animate-pulse-slow backdrop-blur-[1px]"></div>
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[360px] md:w-[480px] lg:w-[650px] aspect-square rounded-full border border-seagrass-200/20 dark:border-seagrass-800/20 animate-spin-slower backdrop-blur-[1px]"></div>
-                
-                {/* Enhanced buoy indicators on the globe with label popups and glow effects */}
-                <div className="absolute top-[30%] left-[55%] group">
-                  <div className="w-3 h-3 bg-white dark:bg-ocean-400 rounded-full shadow-glow animate-pulse-fast"></div>
-                  <div className="absolute top-0 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm text-xs px-2 py-1 rounded-md text-ocean-600 dark:text-ocean-400 whitespace-nowrap pointer-events-none transform scale-0 group-hover:scale-100 origin-left transition-transform duration-300">
-                    Coastal Monitoring Station
+            {/* Right side of Hero - Combined Carousel and Globe Area */}
+            <div className="lg:w-1/2 relative flex flex-col items-center justify-center p-4 mt-8 lg:mt-0 space-y-8">
+              {/* REEFlect Carousel */}
+              <div className="w-full max-w-md z-10">
+                <ReeflectCarousel />
+              </div>
+
+              {/* Restored Globe Animation - Positioned to complement carousel */}
+              <div className="relative w-full flex items-center justify-center min-h-[300px] md:min-h-[380px] opacity-70 dark:opacity-60 scale-90 md:scale-100 -mt-16 md:-mt-24 lg:-mt-32 -z-0">
+                <div className="absolute inset-0 pointer-events-none animate-fade-in">
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] md:w-[380px] aspect-square animate-spin-slow drop-shadow-2xl">
+                    <Globe />
                   </div>
-                </div>
-                <div className="absolute top-[45%] left-[40%] group">
-                  <div className="w-2 h-2 bg-white dark:bg-ocean-400 rounded-full shadow-glow animate-pulse"></div>
-                  <div className="absolute top-0 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm text-xs px-2 py-1 rounded-md text-ocean-600 dark:text-ocean-400 whitespace-nowrap pointer-events-none transform scale-0 group-hover:scale-100 origin-left transition-transform duration-300">
-                    Offshore Sensor Array
-                  </div>
-                </div>
-                <div className="absolute top-[60%] left-[48%] group">
-                  <div className="w-2.5 h-2.5 bg-white dark:bg-ocean-400 rounded-full shadow-glow animate-pulse-slow"></div>
-                  <div className="absolute top-0 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm text-xs px-2 py-1 rounded-md text-ocean-600 dark:text-ocean-400 whitespace-nowrap pointer-events-none transform scale-0 group-hover:scale-100 origin-left transition-transform duration-300">
-                    Reef Monitoring Unit
-                  </div>
-                </div>
-                <div className="absolute top-[33%] left-[28%] group">
-                  <div className="w-2 h-2 bg-seagrass-400 dark:bg-seagrass-500 rounded-full shadow-glow-green animate-pulse-slow"></div>
-                  <div className="absolute top-0 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm text-xs px-2 py-1 rounded-md text-seagrass-600 dark:text-seagrass-400 whitespace-nowrap pointer-events-none transform scale-0 group-hover:scale-100 origin-left transition-transform duration-300">
-                    Tropical Sensor Node
-                  </div>
-                </div>
-                <div className="absolute top-[63%] left-[62%] group">
-                  <div className="w-2 h-2 bg-seagrass-400 dark:bg-seagrass-500 rounded-full shadow-glow-green animate-pulse-medium"></div>
-                  <div className="absolute top-0 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm text-xs px-2 py-1 rounded-md text-seagrass-600 dark:text-seagrass-400 whitespace-nowrap pointer-events-none transform scale-0 group-hover:scale-100 origin-left transition-transform duration-300">
-                    Deep Sea Station
-                  </div>
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] md:w-[420px] aspect-square rounded-full border-2 border-dashed border-ocean-300/40 dark:border-ocean-700/40 animate-spin-reverse-slower"></div>
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] md:w-[440px] aspect-square rounded-full border border-ocean-200/30 dark:border-ocean-800/30 animate-pulse-slow backdrop-blur-[1px]"></div>
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[360px] md:w-[460px] aspect-square rounded-full border border-seagrass-200/20 dark:border-seagrass-800/20 animate-spin-slower backdrop-blur-[1px]"></div>
+                  
+                  {/* Buoy indicators - simplified, adjust as needed */}
+                  <div className="absolute top-[30%] left-[55%] w-2.5 h-2.5 bg-white dark:bg-ocean-400 rounded-full shadow-glow animate-pulse-fast"></div>
+                  <div className="absolute top-[45%] left-[40%] w-2 h-2 bg-white dark:bg-ocean-400 rounded-full shadow-glow animate-pulse"></div>
+                  <div className="absolute top-[60%] left-[48%] w-2.5 h-2.5 bg-white dark:bg-ocean-400 rounded-full shadow-glow animate-pulse-slow"></div>
                 </div>
               </div>
             </div>
@@ -404,45 +341,52 @@ export default function Home() {
       <section className="py-20 bg-white dark:bg-black">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center mb-16">
-            <div className="inline-flex items-center px-3 py-1 rounded-md bg-ocean-50/80 dark:bg-ocean-900/40 mb-6 backdrop-blur-sm border border-ocean-200 dark:border-ocean-800/30 blob-shape-alt">
+            <div className="inline-flex items-center px-3 py-1 rounded-md bg-ocean-50/80 dark:bg-ocean-900/40 mb-6 backdrop-blur-sm border border-ocean-200 dark:border-ocean-800/30">
               <span className="text-sm font-handwritten text-ocean-600 dark:text-ocean-400 uppercase tracking-wider">Our Mission</span>
             </div>
             <h2 className="text-3xl font-serif font-bold text-black dark:text-white mb-4 brush-bg">Making Ocean Data Accessible</h2>
-            <p className="text-xl text-gray-700 dark:text-gray-300 font-sf-pro">
+            <p className="text-xl text-gray-700 dark:text-gray-300 font-serif">
               We believe that open ocean data is essential for addressing climate change, 
               protecting marine ecosystems, and fostering scientific collaboration.
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white dark:bg-gray-900 p-6 rounded-xl border-l-3 border-ocean-600 hover:shadow-md transition-shadow duration-300 hand-drawn-box">
-              <div className="w-12 h-12 bg-ocean-50/80 dark:bg-ocean-900/40 rounded-xl flex items-center justify-center mb-4 backdrop-blur-sm shadow-inner">
-                <Database className="h-6 w-6 text-ocean-600 dark:text-ocean-400" />
+            <div className="bg-white dark:bg-gray-900 p-6 rounded-xl border-l-3 border-ocean-600 hover:shadow-md transition-shadow duration-300 hand-drawn-box relative overflow-hidden">
+              <Image src="/misc/reeflect1.png" alt="Open Access Data Visualization" layout="fill" objectFit="cover" className="absolute inset-0 opacity-15 dark:opacity-[0.07] pointer-events-none" />
+              <div className="relative z-10">
+                <div className="w-12 h-12 bg-ocean-50/80 dark:bg-ocean-900/40 rounded-xl flex items-center justify-center mb-4 backdrop-blur-sm shadow-inner">
+                  <Database className="h-6 w-6 text-ocean-600 dark:text-ocean-400" />
+                </div>
+                <h3 className="text-xl font-cursive font-bold text-black dark:text-white mb-2">Open Access</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-2 font-serif">All data collected by our buoys is freely available under open-source licenses for research, education, and innovation.</p>
               </div>
-              <h3 className="text-xl font-cursive font-bold text-black dark:text-white mb-2">Open Access</h3>
-              <p className="text-gray-700 dark:text-gray-300 font-serif">
-                All data collected by our buoys is freely available under open-source licenses for research, education, and innovation.
-              </p>
             </div>
             
-            <div className="bg-white dark:bg-gray-900 p-6 rounded-xl border-l-3 border-ocean-600 hover:shadow-md transition-shadow duration-300">
-              <div className="w-12 h-12 bg-ocean-50/80 dark:bg-ocean-900/40 rounded-xl flex items-center justify-center mb-4 backdrop-blur-sm shadow-inner">
-                <Share2 className="h-6 w-6 text-ocean-600 dark:text-ocean-400" />
+            <div className="bg-white dark:bg-gray-900 p-6 rounded-xl border-l-3 border-ocean-600 hover:shadow-md transition-shadow duration-300 relative overflow-hidden">
+              <Image src="/misc/reeflect3.png" alt="Global Collaboration Network" layout="fill" objectFit="cover" className="absolute inset-0 opacity-15 dark:opacity-[0.07] pointer-events-none" />
+              <div className="relative z-10">
+                <div className="w-12 h-12 bg-ocean-50/80 dark:bg-ocean-900/40 rounded-xl flex items-center justify-center mb-4 backdrop-blur-sm shadow-inner">
+                  <Share2 className="h-6 w-6 text-ocean-600 dark:text-ocean-400" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 font-sf-display">Global Collaboration</h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  We partner with researchers, organizations, and citizen scientists worldwide to expand our monitoring network.
+                </p>
               </div>
-              <h3 className="text-xl font-bold text-black dark:text-white mb-2 font-sf-display">Global Collaboration</h3>
-              <p className="text-gray-700 dark:text-gray-300 font-sf-pro">
-                We partner with researchers, organizations, and citizen scientists worldwide to expand our monitoring network.
-              </p>
             </div>
             
-            <div className="bg-white dark:bg-gray-900 p-6 rounded-xl border-l-3 border-ocean-600 hover:shadow-md transition-shadow duration-300">
-              <div className="w-12 h-12 bg-ocean-50/80 dark:bg-ocean-900/40 rounded-xl flex items-center justify-center mb-4 backdrop-blur-sm shadow-inner">
-                <Droplet className="h-6 w-6 text-ocean-600 dark:text-ocean-400" />
+            <div className="bg-white dark:bg-gray-900 p-6 rounded-xl border-l-3 border-ocean-600 hover:shadow-md transition-shadow duration-300 relative overflow-hidden">
+              <Image src="/misc/reeflect4.webp" alt="Data Transparency Illustration" layout="fill" objectFit="cover" className="absolute inset-0 opacity-15 dark:opacity-[0.07] pointer-events-none" />
+              <div className="relative z-10">
+                <div className="w-12 h-12 bg-ocean-50/80 dark:bg-ocean-900/40 rounded-xl flex items-center justify-center mb-4 backdrop-blur-sm shadow-inner">
+                  <Droplet className="h-6 w-6 text-ocean-600 dark:text-ocean-400" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 font-sf-display">Data Transparency</h3>
+                <p className="text-gray-700 dark:text-gray-300 font-sf-pro">
+                  Complete documentation of our methodologies, sensor specifications, and data processing for maximum transparency.
+                </p>
               </div>
-              <h3 className="text-xl font-bold text-black dark:text-white mb-2 font-sf-display">Data Transparency</h3>
-              <p className="text-gray-700 dark:text-gray-300 font-sf-pro">
-                Complete documentation of our methodologies, sensor specifications, and data processing for maximum transparency.
-              </p>
             </div>
           </div>
         </div>
@@ -452,8 +396,8 @@ export default function Home() {
       <section id="explore-map" className="py-20 bg-gradient-to-b from-gray-50 to-white dark:from-gray-800 dark:to-black">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center mb-12">
-            <div className="inline-flex items-center px-3 py-1 rounded-md bg-ocean-50/80 dark:bg-ocean-900/40 mb-6 backdrop-blur-sm shadow-apple-sm border border-ocean-200 dark:border-ocean-800/30">
-              <span className="text-sm font-medium text-ocean-600 dark:text-ocean-400 uppercase tracking-wider font-sf-pro">Explore</span>
+            <div className="inline-flex items-center px-3 py-1 rounded-md bg-ocean-50/80 dark:bg-ocean-900/40 mb-6 backdrop-blur-sm border border-ocean-200 dark:border-ocean-800/30">
+              <span className="text-sm font-medium text-ocean-600 dark:text-ocean-400 uppercase tracking-wider">Explore</span>
             </div>
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 font-sf-display">Global Buoy Network</h2>
             <p className="text-lg text-gray-600 dark:text-gray-400 font-sf-pro">
@@ -470,7 +414,20 @@ export default function Home() {
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400 mb-4 font-sf-pro">Click on a buoy marker to view detailed real-time data.</p>
                 <div className="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
-                  <MapComponent buoyData={BUOY_DATA} onBuoySelected={handleBuoySelect} />
+                  <MapComponent 
+                    buoyData={buoys.map(b => ({
+                      id: b.id,
+                      name: b.name,
+                      location: b.location,
+                      status: b.status, // For display in popup
+                      waterTemp: b.data.waterTemp,
+                      waveHeight: b.data.waveHeight,
+                      salinity: b.data.salinity,
+                      iconStatus: mapBuoyStatusToIconStatus(b.status) // For marker icon
+                      // No longer need originalStatus, mappedStatus, fullMetrics, simplified data for MapComponent here
+                    }))}
+                    onBuoySelected={handleBuoySelect} 
+                  />
                 </div>
               </div>
             </div>
@@ -482,11 +439,11 @@ export default function Home() {
                   <span>Featured Buoys</span>
                 </h3>
                 <div className="space-y-4 overflow-y-auto max-h-[500px] pr-2">
-                  {BUOY_DATA.slice(0, 4).map((buoy) => (
+                  {buoys.slice(0, 3).map((buoy) => (
                     <div 
                       key={buoy.id}
                       className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-ocean-300 dark:hover:border-ocean-700 transition-colors cursor-pointer bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm"
-                      onClick={() => handleBuoySelect(buoy)}
+                      onClick={() => handleBuoySelect({ id: buoy.id })}
                     >
                       <div className="flex justify-between items-start mb-2">
                         <h4 className="font-semibold text-gray-900 dark:text-white font-sf-display">{buoy.name}</h4>
@@ -507,7 +464,7 @@ export default function Home() {
                       
                       <div className="text-sm flex items-center gap-2 text-gray-700 dark:text-gray-300 font-sf-pro">
                         <Thermometer className="h-4 w-4 text-orange-500" />
-                        <span>{buoy.data.temperature}°C</span>
+                        <span>{buoy.data.waterTemp}°C</span>
                         <span className="mx-2">|</span>
                         <Droplet className="h-4 w-4 text-blue-500" />
                         <span>{buoy.data.salinity} PSU</span>
@@ -527,16 +484,28 @@ export default function Home() {
           </div>
           
           <div id="buoy-cards" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {BUOY_DATA.map((buoy) => (
-              <BuoyCard
-                key={buoy.id}
-                id={buoy.id}
-                name={buoy.name}
-                location={`${buoy.location.lat.toFixed(2)}, ${buoy.location.lng.toFixed(2)}`}
-                temperature={buoy.data.temperature}
-                onViewDetails={() => handleBuoySelect(buoy)}
-              />
-            ))}
+            {buoys.map((buoy) => {
+              const cardBuoyData = {
+                id: buoy.id,
+                name: buoy.name,
+                location: buoy.location,
+                data: {
+                  temperature: buoy.data.waterTemp ?? 0,
+                  salinity: buoy.data.salinity ?? 0,
+                  ph: buoy.data.ph ?? 0,
+                  dissolved_oxygen: buoy.data.dissolvedOxygen ?? 0
+                },
+                status: buoy.status
+              };
+              return (
+                <BuoyCard 
+                  key={buoy.id}
+                  buoy={cardBuoyData}
+                  isSelected={selectedBuoyId === buoy.id}
+                  onClick={() => handleBuoySelect({ id: buoy.id })}
+                />
+              );
+            })}
           </div>
         </div>
       </section>
@@ -558,8 +527,7 @@ export default function Home() {
             <div className="flex items-center space-x-2 bg-white/90 dark:bg-gray-800/90 p-2 rounded-lg backdrop-blur-sm border border-gray-200 dark:border-gray-700 blob-shape">
               <span className="text-sm">Format:</span>
               <select 
-                value={downloadFormat} 
-                onChange={(e) => setDownloadFormat(e.target.value as 'csv' | 'json' | 'excel')}
+                defaultValue="csv" 
                 className="bg-transparent text-sm p-1 rounded border border-gray-300 dark:border-gray-700"
               >
                 <option value="csv">CSV</option>
@@ -589,11 +557,10 @@ export default function Home() {
                     <p>Updated: {dataset.lastUpdated}</p>
                   </div>
                   <button 
-                    onClick={() => handleDownload(dataset.id)}
                     className="w-full py-2.5 px-4 bg-gradient-to-r from-ocean-600 to-blue-600 hover:from-ocean-700 hover:to-blue-700 text-white rounded-xl transition flex items-center justify-center hover:shadow-lg"
                   >
                     <Download className="w-4 h-4 mr-2" />
-                    <span>Download {downloadFormat.toUpperCase()}</span>
+                    <span>Download CSV</span>
                   </button>
                 </div>
               </div>
@@ -610,7 +577,7 @@ export default function Home() {
               <span className="text-sm font-medium text-ocean-600 dark:text-ocean-400 uppercase tracking-wider">Parameters</span>
             </div>
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Key Parameters We Monitor</h2>
-            <p className="text-lg text-gray-600 dark:text-gray-400 organic-underline inline-block">
+            <p className="text-lg text-gray-600 dark:text-gray-400">
               Our smart buoys continuously monitor these critical ocean health indicators.
             </p>
           </div>
@@ -673,7 +640,7 @@ export default function Home() {
                 </div>
                 <Link 
                   href="/api" 
-                  className="inline-flex items-center gap-2 bg-white text-teal-600 px-4 py-2.5 rounded-xl font-medium hover:bg-gray-100 transition-colors hover:shadow-md transform hover:-translate-y-0.5"
+                  className="inline-flex items-center gap-2 bg-white text-teal-600 px-4 py-2.5 rounded-xl font-medium hover:bg-gray-100 transition-colors hover:shadow-md"
                 >
                   <Atom className="h-4 w-4" />
                   <span className="font-sf-pro">View API Docs</span>
@@ -718,9 +685,9 @@ export default function Home() {
       </section>
 
       {/* Show buoy detail panel when a buoy is selected */}
-      {showBuoyDetail && selectedBuoy && (
+      {showBuoyDetail && selectedBuoyId && (
         <BuoyDetailPanel
-          buoy={BUOY_DATA.find(buoy => buoy.id === selectedBuoy) || null}
+          buoy={buoys.find(b => b.id === selectedBuoyId) || null} // Detail panel gets full Buoy
           onClose={() => setShowBuoyDetail(false)}
         />
       )}
