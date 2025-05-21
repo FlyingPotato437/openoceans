@@ -105,6 +105,9 @@ interface SelectedBuoyFromMap {
   // but it seems only 'id' is used to set selectedBuoyId.
 }
 
+// SEO Metadata for Homepage IS NOW IN app/metadata.ts
+// Removed: export const metadata: Metadata = { ... };
+
 export default function Home() {
   const buoys = useSimulatedBuoyData();
   const [selectedBuoyId, setSelectedBuoyId] = useState<string | null>(null);
@@ -169,8 +172,32 @@ export default function Home() {
     }
   };
 
+  const homePageSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    // name: metadata.title as string, // This will cause an error as metadata is no longer defined here
+    // description: metadata.description as string, // This will cause an error
+    // To fix, you could import metadata from './metadata' if this script needs it,
+    // or hardcode values, or pass them as props if this component is rendered by a server component.
+    // For now, I will use placeholder values for the JSON-LD script as the primary metadata object is in metadata.ts for SEO.
+    name: 'OpenOcean | Live Ocean Data & Research Platform', 
+    description: 'Explore real-time oceanographic data from a global network of smart buoys. Access free datasets on temperature, salinity, wave height, and more for research and conservation.',
+    url: 'https://openocean.org/',
+    isPartOf: {
+      '@type': 'WebSite',
+      url: 'https://openocean.org/'
+    },
+    // Add more specific properties for WebPage if applicable
+    // e.g., mainEntity, primaryImageOfPage, etc.
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homePageSchema) }}
+        key="homepage-jsonld"
+      />
       {/* Padding for fixed header */}
       <div className="pt-16"></div>
 

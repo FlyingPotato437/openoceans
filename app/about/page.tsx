@@ -5,7 +5,7 @@ import { metadata } from './metadata'
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Globe, Users, Cpu, ArrowRight, ExternalLink, User, Image as ImageIcon } from 'lucide-react'
+import { Globe, Users, Cpu, ArrowRight, ExternalLink, User, Image as ImageIcon, Thermometer, BatteryCharging, SatelliteDish, Navigation } from 'lucide-react'
 
 export default function AboutPage() {
   const missionRef = useRef<HTMLDivElement>(null)
@@ -41,8 +41,25 @@ export default function AboutPage() {
     setImageErrors(prev => ({...prev, [imageName]: true}))
   }
   
+  const aboutPageSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: metadata.title,
+    description: metadata.description,
+    url: 'https://openocean.org/about',
+    isPartOf: {
+      '@type': 'WebSite',
+      url: 'https://openocean.org/'
+    },
+  };
+  
   return (
     <div className="flex flex-col min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutPageSchema) }}
+        key="aboutpage-jsonld"
+      />
       <section className="bg-gradient-to-br from-ocean-800 to-ocean-950 py-24 pt-32 border-b-4 border-ocean-500 relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('/images/noise-pattern.png')] opacity-[0.03] pointer-events-none"></div>
         <div className="absolute top-[20%] right-[5%] w-72 h-72 rounded-full bg-gradient-to-br from-ocean-300/10 to-transparent blur-3xl animate-pulse-slow pointer-events-none"></div>
@@ -213,9 +230,18 @@ export default function AboutPage() {
             </div>
             
             <div className="text-center">
-              <Link href="/careers" className="inline-flex items-center text-ocean-600 dark:text-ocean-400 hover:text-ocean-700 dark:hover:text-ocean-300 font-medium bg-ocean-50 dark:bg-ocean-900/30 px-4 py-2 rounded border border-ocean-200 dark:border-ocean-800 transition-colors hover:bg-ocean-100 dark:hover:bg-ocean-900/60">
-                <span>Join our team</span>
-                <ArrowRight className="w-4 h-4 ml-2" />
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 font-serif text-gray-900 dark:text-white">Join Our Team</h2>
+              <p className="text-xl text-gray-700 dark:text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+                We're looking for passionate individuals to help us expand our impact. If you're excited about oceanography, technology, and open science, we'd love to hear from you.
+              </p>
+              <Link
+                href="https://vke4l91re98.typeform.com/to/HhXKC86e"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center px-10 py-4 bg-gradient-to-r from-ocean-500 to-teal-500 hover:from-ocean-600 hover:to-teal-600 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105 text-lg"
+              >
+                <Users className="w-6 h-6 mr-3" />
+                View Open Positions & Apply
               </Link>
             </div>
           </div>
@@ -231,14 +257,64 @@ export default function AboutPage() {
             </div>
             
             <h2 className="text-3xl md:text-4xl font-serif italic font-bold text-transparent dark:text-white mb-6 bg-clip-text bg-gradient-to-r from-ocean-600 to-ocean-800 dark:from-ocean-400 dark:to-ocean-300 brush-bg">
-              Smart Buoys & Data Systems
+              Inside Our Smart Buoys & Data Systems
             </h2>
             
             <div className="prose dark:prose-invert max-w-none mb-8">
               <p className="text-lg text-gray-700 dark:text-gray-300 font-handwritten leading-relaxed">
-                Our smart buoy network represents the cutting edge of ocean monitoring technology. Each buoy is equipped with a suite of sensors that measure key water quality parameters and oceanographic conditions in real-time.
+                Our smart buoy network represents the cutting edge of ocean monitoring technology. Each buoy is meticulously engineered to operate autonomously in harsh marine environments, collecting and transmitting vital oceanographic data.
               </p>
-              
+
+              <h3 className="text-2xl font-serif italic font-bold text-ocean-700 dark:text-ocean-400 mt-8 mb-4 organic-underline inline-block">Core Components & Operation</h3>
+              <p className="text-lg text-gray-700 dark:text-gray-300">
+                At the heart of each OpenOcean smart buoy is a robust, low-power microcontroller, often based on platforms like Arduino or ESP32, chosen for their reliability and versatility. This central processing unit manages data acquisition from a suite of integrated sensors, handles power management, and controls the communication modules.
+              </p>
+              <ul className="space-y-3 mt-4">
+                <li className="flex items-start">
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-ocean-100 dark:bg-ocean-900/60 flex items-center justify-center mr-3 mt-0.5 border border-ocean-200 dark:border-ocean-700 doodle-border">
+                    <Cpu className="w-3 h-3 text-ocean-600 dark:text-ocean-400" />
+                  </div>
+                  <span><strong className="text-ocean-700 dark:text-ocean-400">Microcontroller:</strong> Typically an Arduino Mega, ESP32, or similar industrial-grade single-board computer, programmed for optimized power consumption and sensor management.</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-ocean-100 dark:bg-ocean-900/60 flex items-center justify-center mr-3 mt-0.5 border border-ocean-200 dark:border-ocean-700 doodle-border">
+                    <Thermometer className="w-3 h-3 text-ocean-600 dark:text-ocean-400" />
+                  </div>
+                  <span><strong className="text-ocean-700 dark:text-ocean-400">Sensor Suite:</strong> A comprehensive array of scientific-grade sensors, including:
+                    <ul className="list-disc list-inside ml-4 mt-1 text-base">
+                      <li>CTD sensors (Conductivity, Temperature, Depth) for physical water properties.</li>
+                      <li>Optical sensors for turbidity, chlorophyll-a, and Colored Dissolved Organic Matter (CDOM).</li>
+                      <li>Electrochemical sensors for pH, Dissolved Oxygen (DO), and Oxidation-Reduction Potential (ORP).</li>
+                      <li>Acoustic Doppler Current Profilers (ADCPs) in select buoys for wave height, direction, and current profiling.</li>
+                    </ul>
+                  </span>
+                </li>
+                <li className="flex items-start">
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-ocean-100 dark:bg-ocean-900/60 flex items-center justify-center mr-3 mt-0.5 border border-ocean-200 dark:border-ocean-700 doodle-border">
+                    <BatteryCharging className="w-3 h-3 text-ocean-600 dark:text-ocean-400" />
+                  </div>
+                  <span><strong className="text-ocean-700 dark:text-ocean-400">Power System:</strong> High-efficiency solar panels coupled with marine-grade rechargeable battery packs (e.g., LiFePO4) ensure continuous operation. Advanced power management algorithms optimize energy harvesting and consumption.</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-ocean-100 dark:bg-ocean-900/60 flex items-center justify-center mr-3 mt-0.5 border border-ocean-200 dark:border-ocean-700 doodle-border">
+                    <SatelliteDish className="w-3 h-3 text-ocean-600 dark:text-ocean-400" />
+                  </div>
+                  <span><strong className="text-ocean-700 dark:text-ocean-400">Communication:</strong> Dual communication pathways for redundancy and flexibility. This often includes:
+                    <ul className="list-disc list-inside ml-4 mt-1 text-base">
+                      <li>Satellite telemetry (e.g., Iridium, Swarm) for buoys in remote offshore locations, providing global coverage.</li>
+                      <li>Cellular (4G/LTE Cat-M1/NB-IoT) or LoRaWAN for buoys closer to shore or in areas with existing base station infrastructure, offering higher bandwidth and lower operational costs.</li>
+                    </ul>
+                  Data is typically transmitted at configurable intervals, with capabilities for event-triggered high-frequency reporting if anomalous conditions are detected.
+                  </span>
+                </li>
+                 <li className="flex items-start">
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-ocean-100 dark:bg-ocean-900/60 flex items-center justify-center mr-3 mt-0.5 border border-ocean-200 dark:border-ocean-700 doodle-border">
+                    <Navigation className="w-3 h-3 text-ocean-600 dark:text-ocean-400" />
+                  </div>
+                  <span><strong className="text-ocean-700 dark:text-ocean-400">Positioning &amp; Safety:</strong> GPS modules for accurate location tracking. AIS transponders and LED beacons are fitted for navigational safety and to aid in recovery.</span>
+                </li>
+              </ul>
+
               <h3 className="text-2xl font-serif italic font-bold text-ocean-700 dark:text-ocean-400 mt-8 mb-4 organic-underline inline-block">The REEFlect Partnership</h3>
               
               <p className="text-lg text-gray-700 dark:text-gray-300">
@@ -320,14 +396,14 @@ export default function AboutPage() {
                 </li>
               </ul>
               
-              <h3 className="text-2xl font-serif italic font-bold text-ocean-700 dark:text-ocean-400 mt-8 mb-4 organic-underline inline-block">Data Platform</h3>
+              <h3 className="text-2xl font-serif italic font-bold text-ocean-700 dark:text-ocean-400 mt-8 mb-4 organic-underline inline-block">Data Platform & Accessibility</h3>
               
               <p className="text-lg text-gray-700 dark:text-gray-300 font-handwritten leading-relaxed">
-                Our cloud-based data platform collects, processes, and stores all the data from our buoy network. Using advanced analytics and machine learning, we can identify patterns, detect anomalies, and generate insights that would be impossible through manual analysis.
+                Our cloud-based data platform, developed in-house, is the backbone of our data operations. It ingests, processes, quality-controls, and securely stores all the telemetry data from our buoy network. Using advanced analytics, machine learning models, and time-series analysis, we can identify significant patterns, detect anomalies, and generate actionable insights that would be impossible through manual analysis alone.
               </p>
               
               <p className="text-lg text-gray-700 dark:text-gray-300">
-                All data is made available through our open API, allowing researchers, conservationists, and other stakeholders to access and utilize this valuable information in their own work.
+                All validated data is made available through our open API, adhering to FAIR data principles (Findable, Accessible, Interoperable, Reusable). This allows researchers, conservationists, and other stakeholders to easily access and utilize this valuable information in their own work, fostering collaboration and accelerating scientific discovery.
               </p>
             </div>
             
@@ -335,7 +411,7 @@ export default function AboutPage() {
               <div className="relative h-64 rounded overflow-hidden shadow-xl bg-gradient-to-r from-ocean-500/80 to-ocean-600/80 border border-ocean-600/30 transform transition-all duration-500 hover:scale-[1.02]">
                 {!imageErrors['buoy-diagram'] ? (
                   <Image 
-                    src="/images/buoy-navigation.jpg" 
+                    src="/images/BuoyElectronics.png" 
                     alt="Detailed diagram of a smart ocean monitoring buoy, showing sensors and navigation features, OpenOcean project"
                     fill
                     style={{ objectFit: 'cover' }}
@@ -354,7 +430,7 @@ export default function AboutPage() {
               <div className="relative h-64 rounded overflow-hidden shadow-xl bg-gradient-to-r from-ocean-500/80 to-ocean-600/80 border border-ocean-600/30 transform transition-all duration-500 hover:scale-[1.02]">
                 {!imageErrors['data-dashboard'] ? (
                   <Image 
-                    src="/images/iceberg.jpg" 
+                    src="/images/DataDashboardss.png" 
                     alt="Screenshot of OpenOcean data dashboard displaying oceanographic analytics and buoy data visualization"
                     fill
                     style={{ objectFit: 'cover' }}

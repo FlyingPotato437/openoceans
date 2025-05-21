@@ -4,6 +4,7 @@ import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import Link from 'next/link'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
+import { metadata } from './metadata'
 import { useRouter } from 'next/navigation'
 import { Search, ArrowDownToLine, ChevronLeft, AlertTriangle, CheckCircle, MapPin, Thermometer, Waves as WavesIcon, Droplet as SalinityIcon, Zap as PHIcon, Wind as OxygenIcon, ArrowRight, List, LayoutGrid, Map as MapIcon } from 'lucide-react'
 import { useSimulatedBuoyData } from '@/lib/hooks/useSimulatedBuoyData'
@@ -76,6 +77,20 @@ export default function BrowseDataPage() {
       // No longer using BuoyMapDisplayDataForBrowse explicitly if SimplifiedBuoyDataForMap is the target
     }));
   }, [filteredBuoys]);
+
+  const browsePageSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: metadata.title as string,
+    description: metadata.description as string,
+    url: 'https://openocean.org/data/browse',
+    isPartOf: {
+      '@type': 'WebSite',
+      url: 'https://openocean.org/'
+    },
+    // You could potentially add schema for a SearchAction here if the page itself is a primary search interface
+    // or Dataset schema if the page lists datasets.
+  };
 
   const handleBuoySelectOnMap = (buoy: { id: string }) => { // Expects an object with id from MapComponent
     router.push(`/buoy/${buoy.id}`);
@@ -210,6 +225,11 @@ export default function BrowseDataPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-ocean-50 via-ocean-100 to-ocean-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(browsePageSchema) }}
+        key="browsepage-jsonld"
+      />
       <section className="py-12 pt-28 md:pt-32 bg-white dark:bg-gray-800/50 shadow-sm">
         <div className="container mx-auto px-4 md:px-6">
           <Link href="/data" className="inline-flex items-center text-ocean-600 dark:text-ocean-400 hover:underline mb-6 text-sm">

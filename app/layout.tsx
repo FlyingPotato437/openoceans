@@ -43,7 +43,13 @@ export const metadata: Metadata = {
   title: 'OpenOcean',
   description: 'An open-source initiative for oceanographic data visualization and analysis',
   icons: {
-    icon: '/logos/openoceans_favicon.png',
+    icon: [
+      { url: '/logos/openoceans_favicon.png', type: 'image/png', sizes: 'any' }
+    ],
+    apple: [
+      { url: '/logos/openoceans_favicon.png', type: 'image/png' }
+    ],
+    shortcut: ['/logos/openoceans_favicon.png']
   },
   keywords: [
     'oceanography',
@@ -102,12 +108,31 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const websiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'OpenOcean',
+    url: 'https://openocean.org',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: 'https://openocean.org/search?q={search_term_string}', // Update if you have a site search
+      'query-input': 'required name=search_term_string',
+    },
+    description: 'An open-source initiative for oceanographic data visualization and analysis',
+  };
+
   return (
     <html
       lang="en"
       className={`${inter.variable} ${jetBrainsMono.variable} ${playfairDisplay.variable} ${caveat.variable} ${dancingScript.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
+      </head>
       <body className="min-h-screen bg-background font-sf-pro antialiased" suppressHydrationWarning>
         <ThemeProvider
           attribute="class"

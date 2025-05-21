@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
+import { metadata } from './metadata'
 import { Info, MapPin, Filter, List, Grid3X3, ArrowDownToLine, Sparkles, CloudLightning, Waves, LifeBuoy, Anchor, Compass, ThermometerSnowflake, Droplet } from 'lucide-react'
 import BuoyDetailPanel from '@/components/BuoyDetailPanel'
 import Link from 'next/link'
@@ -83,8 +84,33 @@ export default function MapPage() {
     iconStatus: mapBuoyStatusToIconStatus(buoy.status) // For marker icon
   }));
 
+  const mapPageSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: metadata.title as string,
+    description: metadata.description as string,
+    url: 'https://openocean.org/map',
+    isPartOf: {
+      '@type': 'WebSite',
+      url: 'https://openocean.org/'
+    },
+    // Potential: If the map is the primary content, you could use primaryImageOfPage
+    // primaryImageOfPage: {
+    //   '@type': 'ImageObject',
+    //   url: '/images/openocean-map-preview.jpg', // A static preview image of the map
+    //   width: 1200,
+    //   height: 630,
+    //   caption: 'Interactive map showing OpenOcean buoy locations'
+    // }
+  };
+
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950 pt-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(mapPageSchema) }}
+        key="mappage-jsonld"
+      />
       <div className="container mx-auto px-4 md:px-6 py-8 relative">
         <div className="mb-6 relative">
           <div className="annotation text-ocean-600 dark:text-ocean-500 opacity-80 mb-2 transform rotate-1">

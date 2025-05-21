@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { Metadata } from 'next'
 import { FileText, Users, BookOpen, ArrowUpRight, BookMarked, BarChart3, FlaskConical, ExternalLink, Image as ImageIcon, Lock, KeyRound } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 
@@ -90,6 +91,35 @@ const RECENT_PUBLICATIONS = [
   }
 ]
 
+// SEO Metadata for Research Page
+export const metadata: Metadata = {
+  title: 'Ocean Research & Publications | OpenOcean Initiative',
+  description: 'Explore current oceanographic research projects, scientific publications, and collaborative studies powered by OpenOcean\'s data. Focus on coral bleaching, acidification, and marine heatwaves.',
+  keywords: ['ocean research', 'marine science', 'oceanographic publications', 'coral reef research', 'ocean acidification studies', 'marine heatwaves', 'OpenOcean research', 'scientific collaboration'],
+  openGraph: {
+    title: 'Ocean Research & Publications | OpenOcean',
+    description: 'Dive into OpenOcean\'s scientific research, focusing on critical marine issues and data-driven discoveries.',
+    images: [
+      {
+        url: '/images/openocean-og-research.jpg', // Replace with a specific OG image for the research page
+        width: 1200,
+        height: 630,
+        alt: 'OpenOcean Research and Scientific Publications',
+      },
+    ],
+  },
+  twitter: {
+    title: 'OpenOcean | Scientific Research & Marine Studies',
+    description: 'Discover cutting-edge ocean research and publications from the OpenOcean initiative.',
+    images: [
+      {
+        url: '/images/openocean-twitter-research.jpg', // Replace with a specific Twitter card image for the research page
+        alt: 'OpenOcean - Advancing Marine Science',
+      },
+    ],
+  },
+};
+
 export default function ResearchPage() {
   const [imageErrors, setImageErrors] = useState<{[key: string]: boolean}>({})
   const [password, setPassword] = useState('')
@@ -109,9 +139,28 @@ export default function ResearchPage() {
     }
   }
   
+  const researchPageSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: metadata.title as string,
+    description: metadata.description as string,
+    url: 'https://openocean.org/research',
+    isPartOf: {
+      '@type': 'WebSite',
+      url: 'https://openocean.org/'
+    },
+    // Consider adding schema for CollectionPage if this lists multiple research projects/articles
+    // Or schema.org/ScholarlyArticle for individual research project pages if they exist.
+  };
+  
   if (!isResearchAuthorized) {
     return (
       <div className="flex flex-col min-h-screen">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(researchPageSchema) }}
+          key="researchpage-jsonld-locked"
+        />
         <section className="bg-gradient-to-br from-ocean-50 via-ocean-100 to-ocean-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-20">
           <div className="container mx-auto px-4 md:px-6">
             <div className="max-w-3xl mx-auto text-center">
@@ -183,6 +232,11 @@ export default function ResearchPage() {
   
   return (
     <div className="flex flex-col min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(researchPageSchema) }}
+        key="researchpage-jsonld-authorized"
+      />
       <section className="bg-gradient-to-br from-ocean-50 via-ocean-100 to-ocean-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-20">
         <div className="container mx-auto px-4 md:px-6">
           <div className="max-w-3xl mx-auto text-center">
