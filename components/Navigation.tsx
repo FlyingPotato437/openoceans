@@ -199,8 +199,8 @@ export default function Navigation() {
                 <Image 
                   src="/logos/reeflect_logo_transparent.png" 
                   alt="REEFlect Logo" 
-                  width={18} 
-                  height={18} 
+                  width={42} 
+                  height={42} 
                   className="inline-block ml-1 mr-0.5 opacity-90 group-hover:opacity-100 transition-opacity" 
                 />
                 REEFlect
