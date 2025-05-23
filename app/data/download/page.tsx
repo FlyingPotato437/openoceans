@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft, Download, FileJson, FileText, FileSpreadsheet, Clipboard, Check, ArrowRight, ExternalLink, BarChart2, Globe, Clock, Database } from 'lucide-react'
 import { downloadData } from '@/lib/download'
+import DownloadProgress from '@/components/DownloadProgress'
 
 const ALL_DATASETS = [
   {
@@ -96,6 +97,8 @@ export default function DownloadDataPage() {
   const [copied, setCopied] = useState(false);
   const [queryDataset, setQueryDataset] = useState<string | null>(null);
   const [datasetsToDisplay, setDatasetsToDisplay] = useState(ALL_DATASETS);
+  const [showDownloadProgress, setShowDownloadProgress] = useState(false);
+  const [downloadingDataset, setDownloadingDataset] = useState<{ name: string; format: string; size: string } | null>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -127,11 +130,28 @@ export default function DownloadDataPage() {
   
   const handleDownload = () => {
     if (!selectedDataset || !selectedFormat) return;
+    const currentDataset = ALL_DATASETS.find(d => d.id === selectedDataset);
+    if (!currentDataset) return;
+    
+    setDownloadingDataset({
+      name: currentDataset.name,
+      format: selectedFormat,
+      size: currentDataset.size
+    });
+    setShowDownloadProgress(true);
+  }
+
+  const handleDownloadComplete = () => {
     const placeholderUrl = `/api/data_placeholder/${selectedDataset}`;
     downloadData(placeholderUrl, {
       filename: `openocean_${selectedDataset}_data`,
       format: selectedFormat as 'csv' | 'json' | 'excel'
     });
+  }
+
+  const handleDownloadCancel = () => {
+    setShowDownloadProgress(false);
+    setDownloadingDataset(null);
   }
   
   // The 'dataset' variable for format selection should be based on selectedDataset, not queryDataset directly
@@ -139,6 +159,21 @@ export default function DownloadDataPage() {
   
   return (
     <div className="flex flex-col min-h-screen">
+      {/* Download Progress Modal */}
+      {showDownloadProgress && downloadingDataset && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="max-w-2xl w-full">
+            <DownloadProgress
+              datasetName={downloadingDataset.name}
+              format={downloadingDataset.format}
+              fileSize={downloadingDataset.size}
+              onComplete={handleDownloadComplete}
+              onCancel={handleDownloadCancel}
+            />
+          </div>
+        </div>
+      )}
+      
       <div className="bg-ocean-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center mb-4">

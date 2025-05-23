@@ -55,7 +55,7 @@ export function BuoyCard(props: BuoyCardProps) {
   return (
     <div 
       className={cn(
-        "relative overflow-hidden bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm transition-all duration-300",
+        "relative overflow-hidden bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm transition-all duration-300 hand-drawn-box",
         isHovered ? "shadow-md transform -translate-y-1 border-gray-300 dark:border-gray-600" : "",
         isSelected ? "ring-2 ring-ocean-500 dark:ring-ocean-400" : "",
         props.className
@@ -69,15 +69,15 @@ export function BuoyCard(props: BuoyCardProps) {
           <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${statusColor}`}></span>
           <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${statusColor}`}></span>
         </span>
-        <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Live</span>
+        <span className="text-xs font-handwritten text-gray-500 dark:text-gray-400">Live</span>
       </div>
       
       <div className="p-6">
         <div className="mb-4">
-          <h3 className="text-lg font-heading font-semibold text-gray-900 dark:text-white">
+          <h3 className="text-lg font-serif font-semibold text-gray-900 dark:text-white">
             {name}
           </h3>
-          <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mt-1">
+          <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mt-1 font-mono">
             <span className="inline-block">ID: {id}</span>
             <span className="mx-2">•</span>
             <span className="truncate">{location}</span>
@@ -122,7 +122,7 @@ export function BuoyCard(props: BuoyCardProps) {
         
         <button
           onClick={onClick}
-          className="w-full flex items-center justify-center gap-2 py-2.5 bg-ocean-50 hover:bg-ocean-100 dark:bg-ocean-900/30 dark:hover:bg-ocean-900/50 text-ocean-600 dark:text-ocean-400 rounded-lg font-medium transition-colors border border-ocean-200 dark:border-ocean-800/50"
+          className="w-full flex items-center justify-center gap-2 py-2.5 bg-ocean-50 hover:bg-ocean-100 dark:bg-ocean-900/30 dark:hover:bg-ocean-900/50 text-ocean-600 dark:text-ocean-400 rounded-lg font-serif transition-colors border border-ocean-200 dark:border-ocean-800/50 blob-shape"
         >
           <span>View Details</span>
           <ArrowUpRight className="h-4 w-4" />
@@ -144,12 +144,12 @@ function MetricCard({
   color: string 
 }) {
   return (
-    <div className={`${color} rounded-lg p-3 flex flex-col border border-gray-100 dark:border-gray-700`}>
+    <div className={`${color} rounded-lg p-3 flex flex-col border border-gray-100 dark:border-gray-700 doodle-border`}>
       <div className="flex items-center gap-1.5 mb-1.5">
         {icon}
-        <span className="text-xs font-medium text-gray-700 dark:text-gray-300">{label}</span>
+        <span className="text-xs font-handwritten text-gray-700 dark:text-gray-300">{label}</span>
       </div>
-      <span className="text-base font-semibold text-gray-900 dark:text-white">{value}</span>
+      <span className="text-base font-mono font-semibold text-gray-900 dark:text-white">{value}</span>
     </div>
   )
 }
