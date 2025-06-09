@@ -1,14 +1,15 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
-import { ArrowLeft, Download, MapPin, Calendar, Anchor, Waves, Activity, AlertTriangle, CheckCircle, ExternalLink, Share2, FileJson, FileText } from 'lucide-react'
+import { ArrowLeft, Download, MapPin, Calendar, Anchor, Waves, Activity, AlertTriangle, CheckCircle, ExternalLink, Share2, FileJson, FileText, Info } from 'lucide-react'
 import { useSimulatedBuoyData } from '@/lib/hooks/useSimulatedBuoyData'
 import { Buoy } from '@/lib/types'
 import LiveDataStream from '@/components/LiveDataStream'
+import { DEMO_MODE } from '@/components/DemoBanner'
 
 // Dynamically import the MiniMap component to avoid SSR issues with Leaflet
 const MiniMap = dynamic(() => import('@/components/MiniMap'), {
@@ -22,7 +23,6 @@ const MiniMap = dynamic(() => import('@/components/MiniMap'), {
 
 export default function BuoyDetailPage() {
   const params = useParams()
-  const router = useRouter()
   const buoys = useSimulatedBuoyData()
   const [buoy, setBuoy] = useState<Buoy | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -64,7 +64,7 @@ export default function BuoyDetailPage() {
             <AlertTriangle className="h-16 w-16 text-red-500 mx-auto mb-4" />
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 font-serif">Buoy Not Found</h1>
             <p className="text-gray-600 dark:text-gray-400 mb-6 font-handwritten">
-              The buoy with ID "<span className="font-mono">{params.id}</span>" could not be found in our network.
+              The buoy with ID &quot;<span className="font-mono">{params.id}</span>&quot; could not be found in our network.
             </p>
             <Link 
               href="/data/browse"
@@ -104,7 +104,7 @@ export default function BuoyDetailPage() {
         text: `Check out live data from ${buoy.name}`,
         url: window.location.href
       })
-    } catch (error) {
+    } catch {
       // Fallback to clipboard
       navigator.clipboard.writeText(window.location.href)
       alert('Link copied to clipboard!')
@@ -223,6 +223,39 @@ export default function BuoyDetailPage() {
               buoyName={buoy.name}
               isActive={buoy.status === 'Online'}
             />
+
+            {/* Demo Notice - Integrated into page content */}
+            {DEMO_MODE && (
+              <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-xl p-6 hand-drawn-box">
+                <div className="flex items-start gap-3">
+                  <AlertTriangle className="h-5 w-5 text-orange-600 dark:text-orange-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h3 className="text-lg font-semibold text-orange-900 dark:text-orange-100 mb-2 font-serif">Demo Site Notice</h3>
+                    <div className="text-sm text-orange-800 dark:text-orange-200 space-y-2 font-handwritten">
+                      <p><strong>This is a demonstration site.</strong> All data shown for this buoy is simulated and for testing purposes only.</p>
+                      <p>Real-time readings, historical data, and sensor information are generated for demonstration and may not reflect actual oceanographic conditions.</p>
+                      <p><strong>Do not use this data for navigation, research, or safety purposes.</strong></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Data Accuracy Disclaimer */}
+            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6 hand-drawn-box">
+              <div className="flex items-start gap-3">
+                <Info className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+                <div>
+                  <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2 font-serif">Data Accuracy & Reliability</h3>
+                  <div className="text-sm text-blue-800 dark:text-blue-200 space-y-2 font-handwritten">
+                    <p><strong>Sensor Accuracy:</strong> Temperature ±0.1°C, Salinity ±0.02 PSU, pH ±0.02, Wave Height ±0.05m</p>
+                    <p><strong>Data Quality:</strong> All readings undergo real-time quality control. Data marked as &quot;Warning&quot; may have reduced accuracy.</p>
+                    <p><strong>Calibration:</strong> Sensors are calibrated every 6 months. Last calibration dates available in metadata.</p>
+                    <p><strong>Limitations:</strong> Environmental conditions may affect sensor performance. Use caution during extreme weather events.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             {/* Download Data Section */}
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hand-drawn-box">

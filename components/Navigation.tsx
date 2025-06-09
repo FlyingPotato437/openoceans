@@ -5,10 +5,11 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, ChevronDown, Search, Moon, Sun } from 'lucide-react'
+import { Menu, X, ChevronDown, Search } from 'lucide-react'
 import { ThemeSwitcher } from './ThemeSwitcher'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/contexts/AuthContext'
+
 
 // Server component that handles the menu items
 export const NavigationMenu = ({ isResearchAuthorized = false }: { isResearchAuthorized?: boolean }) => {
@@ -166,14 +167,14 @@ export default function Navigation() {
   }, [pathname])
   
   return (
-    <header 
-      className={cn(
-        "fixed top-0 w-full z-50 transition-all duration-300",
-        hasMounted && scrolled 
-          ? "bg-white/95 dark:bg-black/95 backdrop-blur-lg shadow-sharp border-b border-border" 
-          : "bg-white/80 dark:bg-black/80 backdrop-blur-sm"
-      )}
-    >
+          <header 
+        className={cn(
+          "fixed top-0 w-full z-50 transition-all duration-300",
+          hasMounted && scrolled 
+            ? "bg-white/95 dark:bg-black/95 backdrop-blur-lg shadow-sharp border-b border-border" 
+            : "bg-white/80 dark:bg-black/80 backdrop-blur-sm"
+        )}
+      >
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex items-center justify-between h-16 md:h-16">
           {/* Logo */}
@@ -191,9 +192,9 @@ export default function Navigation() {
               </div>
             </div>
             <div className="flex flex-col">
-              <span className="font-serif font-semibold text-base md:text-lg text-black dark:text-white tracking-tight">
-                Open<span className="text-ocean-600 dark:text-ocean-400">Ocean</span>
-              </span>
+                              <span className="font-serif font-semibold text-base md:text-lg text-black dark:text-white tracking-tight">
+                  Open<span className="text-ocean-600 dark:text-ocean-400">Ocean</span>
+                </span>
               <span className="text-[10px] text-[#6e6e73] dark:text-gray-400 -mt-1 whitespace-nowrap uppercase tracking-wider flex items-center">
                 in collaboration with&nbsp;
                 <Image 

@@ -428,6 +428,38 @@ export default function DownloadDataPage() {
               </div>
             )}
             
+            {/* Data Terms & Disclaimer */}
+            <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-6 mb-10 hand-drawn-box">
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-amber-100 dark:bg-amber-900/40 rounded-lg flex-shrink-0">
+                  <ExternalLink className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-amber-900 dark:text-amber-100 mb-3 font-serif">Data Usage Terms & Accuracy</h3>
+                  <div className="text-sm text-amber-800 dark:text-amber-200 space-y-3 font-handwritten leading-relaxed">
+                    <div>
+                      <p><strong>License:</strong> All data is provided under CC BY 4.0 International license. Attribution required when publishing or sharing.</p>
+                    </div>
+                    <div>
+                      <p><strong>Accuracy Standards:</strong> Temperature ±0.1°C, Salinity ±0.02 PSU, pH ±0.02, Wave Height ±0.05m, Dissolved Oxygen ±2 µmol/kg</p>
+                    </div>
+                    <div>
+                      <p><strong>Quality Control:</strong> All data undergoes automated and manual quality checks. Outliers and suspicious readings are flagged in metadata.</p>
+                    </div>
+                    <div>
+                      <p><strong>Data Gaps:</strong> Sensor maintenance, extreme weather, or technical issues may cause temporary data gaps. Check metadata for coverage information.</p>
+                    </div>
+                    <div>
+                      <p><strong>Real-time vs Historical:</strong> Real-time data may have reduced accuracy. Historical data includes post-processing and calibration corrections.</p>
+                    </div>
+                    <div>
+                      <p><strong>Intended Use:</strong> Suitable for research, education, and environmental monitoring. Not recommended for navigation or safety-critical applications.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="bg-ocean-50 dark:bg-gray-800 rounded-sm shadow-lg border-l-4 border-ocean-500 dark:border-ocean-400 overflow-hidden">
               <div className="p-6">
                 <div className="flex items-center mb-4">
