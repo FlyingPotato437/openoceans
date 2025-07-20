@@ -9,7 +9,7 @@ import { ArrowLeft, Download, MapPin, Calendar, Anchor, Waves, Activity, AlertTr
 import { useSimulatedBuoyData } from '@/lib/hooks/useSimulatedBuoyData'
 import { Buoy } from '@/lib/types'
 import LiveDataStream from '@/components/LiveDataStream'
-import { DEMO_MODE } from '@/components/DemoBanner'
+
 
 // Dynamically import the MiniMap component to avoid SSR issues with Leaflet
 const MiniMap = dynamic(() => import('@/components/MiniMap'), {
@@ -224,22 +224,7 @@ export default function BuoyDetailPage() {
               isActive={buoy.status === 'Online'}
             />
 
-            {/* Demo Notice - Integrated into page content */}
-            {DEMO_MODE && (
-              <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-xl p-6 hand-drawn-box">
-                <div className="flex items-start gap-3">
-                  <AlertTriangle className="h-5 w-5 text-orange-600 dark:text-orange-400 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <h3 className="text-lg font-semibold text-orange-900 dark:text-orange-100 mb-2 font-serif">Demo Site Notice</h3>
-                    <div className="text-sm text-orange-800 dark:text-orange-200 space-y-2 font-handwritten">
-                      <p><strong>This is a demonstration site.</strong> All data shown for this buoy is simulated and for testing purposes only.</p>
-                      <p>Real-time readings, historical data, and sensor information are generated for demonstration and may not reflect actual oceanographic conditions.</p>
-                      <p><strong>Do not use this data for navigation, research, or safety purposes.</strong></p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+
 
             {/* Data Accuracy Disclaimer */}
             <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6 hand-drawn-box">

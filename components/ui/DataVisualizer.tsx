@@ -31,7 +31,7 @@ export function DataVisualizer({ data = [], className = '' }: DataVisualizerProp
   const [selectedMetric, setSelectedMetric] = useState<MetricType>('temperature')
   const [timeRange, setTimeRange] = useState<string>('24h')
   
-  // Sample data for demonstration if no data is provided
+  // Default data if no data is provided
   const sampleData = [
     { timestamp: '00:00', temperature: 22.5, salinity: 35.2, ph: 8.1, dissolved_oxygen: 6.8 },
     { timestamp: '04:00', temperature: 22.3, salinity: 35.4, ph: 8.0, dissolved_oxygen: 6.7 },

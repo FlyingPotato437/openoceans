@@ -357,14 +357,14 @@ export default function BuoyDetailPanel({ buoy, onClose }: { buoy: Buoy | null; 
             <div className="space-y-4">
               <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Export Data</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Download buoy data in various formats. Note: Historical data is simulated for this demonstration.
+                Download buoy data in various formats.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {[ { format: 'JSON', icon: <FileJson/>, desc: 'Full data export including metadata and readings.' }, { format: 'CSV', icon: <FileText/>, desc: 'Timeseries sensor data in CSV format.' }, { format: 'Share', icon: <Share2/>, desc: 'Generate a shareable link to this buoy.' }].map(item => (
                   <button 
                     key={item.format}
                     className="flex flex-col items-center justify-center p-6 bg-gray-50 hover:bg-gray-100 dark:bg-gray-800/50 dark:hover:bg-gray-700/60 rounded-lg border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-lg transform hover:-translate-y-1"
-                    onClick={() => alert(`Exporting as ${item.format} (demo)`)}
+                    onClick={() => alert(`Exporting as ${item.format}`)}
                   >
                     {React.cloneElement(item.icon, {className: "w-10 h-10 mb-3 text-ocean-600 dark:text-ocean-400"})}
                     <span className="text-lg font-medium text-gray-800 dark:text-white">{item.format}</span>

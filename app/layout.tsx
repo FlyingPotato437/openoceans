@@ -6,7 +6,7 @@ import Footer from '@/components/Footer'
 // import { Analytics } from '@vercel/analytics/react'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { AuthProvider } from '@/contexts/AuthContext'
-import DemoBanner from '@/components/DemoBanner'
+
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -146,7 +146,7 @@ export default function RootLayout({
               <Navigation />
               <main className="flex-grow pt-16">{children}</main>
               <Footer />
-              <DemoBanner variant="watermark" showCloseButton={false} />
+
             </div>
             {/* <Analytics /> */}
           </AuthProvider>
